@@ -1,0 +1,8 @@
+/build/
+/.mygo/
+node_modules/
+.DS_Store
+/windeck
+website/dist/
+website/.void/
+website/.void-wrangler.jsonc

@@ -1,0 +1,252 @@
+{
+  "@@locale": "en",
+  "aboutTagline": "Your windows, at hand like a deck of cards.",
+  "@aboutTagline": {
+    "description": "The About page's tagline."
+  },
+  "aboutVersion": "Version {version}",
+  "@aboutVersion": {
+    "description": "The About page.",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.0.0"
+      }
+    }
+  },
+  "aboutWebsite": "Website",
+  "@aboutWebsite": {
+    "description": "A button opening windeck.app."
+  },
+  "appearanceDark": "Dark",
+  "@appearanceDark": {
+    "description": "An appearance."
+  },
+  "appearanceLight": "Light",
+  "@appearanceLight": {
+    "description": "An appearance, the default."
+  },
+  "appearanceSystem": "System",
+  "@appearanceSystem": {
+    "description": "Following the system's appearance."
+  },
+  "badgeDesktop": "Desktop {n}",
+  "@badgeDesktop": {
+    "description": "A window's Space, in the preview's header.",
+    "placeholders": {
+      "n": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "badgeDesktopShort": "D{n}",
+  "@badgeDesktopShort": {
+    "description": "A window's Space, compact in the list.",
+    "placeholders": {
+      "n": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "badgeDisplay": "External display",
+  "@badgeDisplay": {
+    "description": "A window on an external display."
+  },
+  "badgeFullScreen": "Full screen",
+  "@badgeFullScreen": {
+    "description": "A window in full screen or Split View."
+  },
+  "badgeHidden": "Hidden",
+  "@badgeHidden": {
+    "description": "A window of a hidden app (Cmd-H)."
+  },
+  "badgeMinimized": "Minimized",
+  "@badgeMinimized": {
+    "description": "A window in the Dock."
+  },
+  "badgeNoWindows": "No windows",
+  "@badgeNoWindows": {
+    "description": "A running app without windows."
+  },
+  "commonCancel": "Cancel",
+  "hintClear": "Clear",
+  "@hintClear": {
+    "description": "The key hint of Escape while searching."
+  },
+  "hintClose": "Close",
+  "@hintClose": {
+    "description": "The key hint of W."
+  },
+  "hintMinimize": "Minimize",
+  "@hintMinimize": {
+    "description": "The key hint of M."
+  },
+  "hintMove": "Move",
+  "@hintMove": {
+    "description": "The key hint of the arrow keys."
+  },
+  "hintNext": "Next",
+  "@hintNext": {
+    "description": "The key hint of Tab."
+  },
+  "hintQuit": "Quit app",
+  "@hintQuit": {
+    "description": "The key hint of Q."
+  },
+  "hintSwitch": "Switch",
+  "@hintSwitch": {
+    "description": "The key hint of Return while searching."
+  },
+  "keySpace": "Space",
+  "@keySpace": {
+    "description": "The space bar, on a key cap."
+  },
+  "languageSystem": "System",
+  "@languageSystem": {
+    "description": "The system's language."
+  },
+  "licenseActivate": "Activate",
+  "licenseActive": "Activated",
+  "@licenseActive": {
+    "description": "A license activated on this Mac."
+  },
+  "licenseBuy": "Buy Windeck Pro",
+  "licenseDeactivate": "Deactivate this Mac",
+  "licenseDeactivated": "This Mac is deactivated: the key can serve another one.",
+  "licenseDeactivateDetail": "Frees one of the license's three Macs.",
+  "licenseEnter": "License key",
+  "licenseFree": "Free",
+  "licenseInvalid": "This key is not valid, or it is active on three Macs already.",
+  "licenseNetwork": "Could not reach the license server. Check the connection and try again.",
+  "licenseOwner": "Licensed to {email}",
+  "@licenseOwner": {
+    "placeholders": {
+      "email": {
+        "type": "String",
+        "example": "ada@example.com"
+      }
+    }
+  },
+  "licensePitch": "The predicted next window, search ranked by your habits, and more to come. One purchase, three Macs.",
+  "licensePrice": "$12.99 once · ¥68 in China · 14-day refund",
+  "licenseThanks": "Thank you! Windeck Pro is activated.",
+  "licenseTrial": "Trial · {days, plural, one {# day} other {# days}} left",
+  "@licenseTrial": {
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "14"
+      }
+    }
+  },
+  "listEmpty": "No windows",
+  "onboardBack": "Back",
+  "onboardDone": "Start using Windeck",
+  "onboardNext": "Continue",
+  "onboardShortcut": "Choose your shortcut",
+  "onboardShortcutDetail": "Hold it and press Tab to go through your windows; let go to switch.",
+  "onboardShortcutNote": "You can change it any time in Settings.",
+  "onboardTitle": "Welcome to Windeck",
+  "@onboardTitle": {
+    "description": "The onboarding window's title."
+  },
+  "onboardWelcome": "Welcome to Windeck",
+  "onboardWelcomeDetail": "Switch to any window like a browser tab. Windeck needs two permissions; nothing ever leaves your Mac.",
+  "pageAbout": "About",
+  "pageGeneral": "General",
+  "pageLicense": "License",
+  "pagePrivacy": "Privacy",
+  "pageSmart": "Smart",
+  "permAccessibility": "Accessibility",
+  "permAccessibilityDetail": "Lists, raises, closes and minimizes windows.",
+  "permAccessibilityWhy": "Needed to list your windows, switch to them, and hear the shortcut.",
+  "permAllow": "Allow…",
+  "permGranted": "Allowed",
+  "permOpen": "Open System Settings",
+  "permOptional": "Optional",
+  "permRelaunch": "Restart Windeck",
+  "permRequired": "Required",
+  "permScreen": "Screen Recording",
+  "permScreenDetail": "Shows windows' pictures in the preview.",
+  "permScreenRestart": "macOS applies Screen Recording once Windeck restarts.",
+  "permScreenWhy": "Shows large previews of your windows. Without it, Windeck shows titles only.",
+  "predictedTip": "Predicted from your habits",
+  "previewApp": "Running, with no windows open. Switching brings it forward.",
+  "previewExcluded": "On your privacy list: Windeck never captures this app.",
+  "previewHidden": "This app is hidden. Switching shows it again.",
+  "previewMinimized": "Minimized before Windeck saw it, so there is no picture yet. Switching brings it back.",
+  "previewNoPermission": "Allow Screen Recording in Settings to see previews.",
+  "previewOf": "Preview of {title}",
+  "@previewOf": {
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "main.go"
+      }
+    }
+  },
+  "previewOff": "Previews are turned off in Settings.",
+  "privacyAdd": "Add an app",
+  "privacyData": "Data",
+  "privacyDataFolder": "Local data folder",
+  "privacyExcluded": "Privacy list",
+  "privacyExcludedDetail": "Windeck never captures these apps' windows, never keeps their titles, and learns nothing from them.",
+  "privacyPermissions": "Permissions",
+  "privacyPromise": "Window pictures, your habits and what Windeck learns stay on this Mac. Titles, pictures and app lists are never sent anywhere.",
+  "privacyRemove": "Remove",
+  "privacyReveal": "Show in Finder",
+  "resetButton": "Reset…",
+  "resetConfirm": "Reset",
+  "resetDetail": "Forgets your habits, predictions and every window picture kept.",
+  "resetTitle": "Reset learned data",
+  "rowClose": "Close window",
+  "rowMinimize": "Minimize window",
+  "searchPlaceholder": "Search windows",
+  "settingsAppearance": "Appearance",
+  "settingsBehavior": "Behavior",
+  "settingsLanguage": "Language",
+  "settingsLook": "Look",
+  "settingsOpenAtLogin": "Open at login",
+  "settingsPreviews": "Window previews",
+  "settingsPreviewsDetail": "Off, the switcher shows titles alone.",
+  "settingsPrimaryDisplay": "Always on the main display",
+  "settingsPrimaryDisplayDetail": "Otherwise the panel shows where you work.",
+  "settingsQuickDelay": "Quick switch delay",
+  "settingsQuickDelayDetail": "Released sooner, the shortcut switches without showing the panel.",
+  "settingsShortcut": "Shortcut",
+  "settingsTitle": "Windeck Settings",
+  "@settingsTitle": {
+    "description": "The Settings window's title."
+  },
+  "settingsWindowless": "Show apps without windows",
+  "settingsWindowlessDetail": "Listed at the end, to bring them forward.",
+  "shortcutCommandDetail": "Takes over ⌘Tab: for heavy multi-window use and Windows habits.",
+  "shortcutCommandTitle": "Take over Command-Tab",
+  "shortcutOptionDetail": "Keeps the system's ⌘Tab for apps; ⌥Tab goes to windows.",
+  "shortcutOptionTitle": "Option-Tab beside Command-Tab",
+  "shortcutRecommended": "Recommended",
+  "smartLocalNote": "Learned on this Mac only, from the windows you switch to.",
+  "smartNeedsPro": "Smart features are part of Windeck Pro. Activate a license to turn them on.",
+  "smartPersonal": "Rank search by habit",
+  "smartPersonalDetail": "The same letters bring the window you go to most first.",
+  "smartPredict": "Predict the second window",
+  "smartPredictDetail": "The first Tab always goes back; the second goes where you usually go next.",
+  "smartStats": "On this Mac",
+  "statKeys": "keys per switch",
+  "statToday": "switches today",
+  "statTopTwo": "found in the first two",
+  "traySearch": "Search Windows ({shortcut}, Space)",
+  "@traySearch": {
+    "placeholders": {
+      "shortcut": {
+        "type": "String",
+        "example": "⌥⇥"
+      }
+    }
+  },
+  "trayPermissions": "Permissions & Shortcut…",
+  "trayQuit": "Quit Windeck",
+  "traySettings": "Settings…"
+}
