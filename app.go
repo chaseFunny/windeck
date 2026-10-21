@@ -41,7 +41,7 @@ type App struct {
 	onboardWin *mygo.Window
 	tray       *mygo.Tray
 
-	ses     session  // the switch under way
+	ses     session // the switch under way
 	icons   iconCache
 	shots   previewCache
 	refresh refresher

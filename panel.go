@@ -380,7 +380,7 @@ func (a *App) appIconView(c *ui.Context, pal *palette, path string, size float32
 		ui.Image(c, b).Size(size, size).Shrink(0)
 		return
 	}
-	ui.Box(c).Size(size, size).Shrink(0).Radius(size/4.5).Background(pal.chip)
+	ui.Box(c).Size(size, size).Shrink(0).Radius(size / 4.5).Background(pal.chip)
 }
 
 // --- the preview ---
