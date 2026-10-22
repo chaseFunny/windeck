@@ -1,7 +1,7 @@
 {
   "name": "Windeck",
   "identifier": "app.windeck",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "copyright": "Copyright © 2026 Windeck",
   "out": "build",
   "i18n": {
@@ -15,5 +15,10 @@
       "CFBundleDisplayName": "Windeck",
       "NSHumanReadableCopyright": "Copyright © 2026 Windeck"
     }
+  },
+  "updates": {
+    "publicKey": "hd1QVAyAZnK51VJq7mbHQx9aJw9Vbrf2C+saywAA4PA=",
+    "github": "chaseFunny/windeck",
+    "privateKey": "~/Library/Application Support/mygo/update-keys/mygo-update.key"
   }
 }

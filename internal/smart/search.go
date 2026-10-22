@@ -110,3 +110,52 @@ func (m *Model) frecencyAt(i Item, now int64) float64 {
 	}
 	return f
 }
+
+// Positions are the runes of s that a query matches, as Match finds
+// them, to show in bold: the substring when there is one, else the
+// letters in turn. Nil when it does not match.
+func Positions(query, s string) []int {
+	query = strings.TrimSpace(query)
+	if query == "" {
+		return nil
+	}
+	q := []rune(strings.ToLower(query))
+	r := []rune(strings.ToLower(s))
+	if len(r) != len([]rune(s)) {
+		return nil // a case mapping that changes lengths: no bold
+	}
+	if i := runeIndex(r, q); i >= 0 {
+		out := make([]int, len(q))
+		for k := range q {
+			out[k] = i + k
+		}
+		return out
+	}
+	var out []int
+	qi := 0
+	for i := 0; i < len(r) && qi < len(q); i++ {
+		if q[qi] == ' ' {
+			qi++
+			if qi == len(q) {
+				break
+			}
+		}
+		if r[i] == q[qi] {
+			out = append(out, i)
+			qi++
+		}
+	}
+	if qi < len(q) {
+		return nil
+	}
+	return out
+}
+
+func runeIndex(s, sub []rune) int {
+	for i := 0; i+len(sub) <= len(s); i++ {
+		if string(s[i:i+len(sub)]) == string(sub) {
+			return i
+		}
+	}
+	return -1
+}

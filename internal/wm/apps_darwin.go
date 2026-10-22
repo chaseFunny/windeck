@@ -2,6 +2,7 @@ package wm
 
 import (
 	"runtime"
+	"strings"
 	"unsafe"
 
 	"github.com/ebitengine/purego/objc"
@@ -146,4 +147,36 @@ func QuitApp(pid int32) {
 // HideApp hides an app, as Cmd-H does.
 func HideApp(pid int32) {
 	withApp(pid, func(app objc.ID) { objc.Send[bool](app, selHide) })
+}
+
+var (
+	selURLForBundle   = objc.RegisterName("URLForApplicationWithBundleIdentifier:")
+	selDefaultManager = objc.RegisterName("defaultManager")
+	selDisplayName    = objc.RegisterName("displayNameAtPath:")
+
+	classFileManager = class("NSFileManager")
+)
+
+// InstalledApp finds the app of a bundle ID on this Mac, running or not:
+// its name as Finder shows it, and its bundle. ok is false when it is not
+// installed.
+func InstalledApp(bundleID string) (name, path string, ok bool) {
+	if bundleID == "" {
+		return "", "", false
+	}
+	withPool(func() {
+		u := workspace().Send(selURLForBundle, objc.ID(cfstr(bundleID)))
+		if u == 0 {
+			return
+		}
+		path = nsString(u.Send(selPath))
+		if path == "" {
+			return
+		}
+		ns := objc.ID(cfstr(path))
+		name = nsString(classFileManager.Send(selDefaultManager).Send(selDisplayName, ns))
+		name = strings.TrimSuffix(name, ".app")
+		ok = true
+	})
+	return name, path, ok
 }

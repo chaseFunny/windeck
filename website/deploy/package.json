@@ -1,0 +1,10 @@
+{
+  "name": "windeck-site-deploy",
+  "private": true,
+  "description": "Deploys website/dist/client to Cloudflare at windeck.islumi.com with the cf CLI.",
+  "devDependencies": {
+    "cf": "1.0.0-beta.17",
+    "wrangler": "^4.151.3"
+  },
+  "type": "module"
+}

@@ -7,6 +7,7 @@ import (
 	"github.com/egoist/mygo"
 	"github.com/egoist/mygo/ui"
 
+	"windeck/internal/settings"
 	"windeck/locales"
 )
 
@@ -48,14 +49,30 @@ func (a *App) trayMenu() *mygo.Menu {
 	if a.set.Shortcut == "command" {
 		shortcut = "⌘⇥"
 	}
-	return mygo.NewMenu([]*mygo.MenuItem{
+	update := []*mygo.MenuItem{
+		{Label: locales.TrayCheckUpdates(), Click: func(*mygo.MenuItem, *mygo.Window) { a.checkForUpdates() }},
+	}
+	if a.upd.ready != "" {
+		// Installed in the background: it runs once Windeck starts again.
+		update = append([]*mygo.MenuItem{
+			{Label: locales.TrayRestartUpdate(a.upd.ready), Click: func(*mygo.MenuItem, *mygo.Window) { mygo.App.Relaunch() }},
+		}, update...)
+	}
+	items := []*mygo.MenuItem{
 		{Label: locales.TraySearch(shortcut), Click: func(*mygo.MenuItem, *mygo.Window) { a.openSearch() }},
 		mygo.Separator(),
+		{Label: locales.TrayLayout(), Submenu: []*mygo.MenuItem{
+			a.layoutItem(settings.LayoutTabs, locales.LayoutTabs()),
+			a.layoutItem(settings.LayoutList, locales.LayoutList()),
+		}},
 		{Label: locales.TraySettings(), Accelerator: "Cmd+,", Click: func(*mygo.MenuItem, *mygo.Window) { a.openSettings() }},
 		{Label: locales.TrayPermissions(), Click: func(*mygo.MenuItem, *mygo.Window) { a.openOnboarding() }},
 		mygo.Separator(),
-		{Label: locales.TrayQuit(), Accelerator: "Cmd+Q", Click: func(*mygo.MenuItem, *mygo.Window) { mygo.App.Quit() }},
-	})
+	}
+	items = append(items, update...)
+	items = append(items, mygo.Separator(),
+		&mygo.MenuItem{Label: locales.TrayQuit(), Accelerator: "Cmd+Q", Click: func(*mygo.MenuItem, *mygo.Window) { mygo.App.Quit() }})
+	return mygo.NewMenu(items)
 }
 
 // openSearch opens the switcher straight in search, from the menu bar.
@@ -75,4 +92,27 @@ func focusApp(w *mygo.Window) {
 	mygo.App.Focus()
 	w.Show()
 	w.Focus()
+}
+
+// layoutItem chooses a layout of the panel from the menu bar.
+func (a *App) layoutItem(mode, label string) *mygo.MenuItem {
+	return &mygo.MenuItem{Label: label, Type: mygo.MenuItemRadio, Checked: a.set.Layout == mode, Click: func(*mygo.MenuItem, *mygo.Window) {
+		a.setLayout(mode)
+	}}
+}
+
+// setLayout switches the panel's layout and saves it.
+func (a *App) setLayout(mode string) {
+	if a.set.Layout == mode {
+		return
+	}
+	a.set.Layout = mode
+	a.saveSettings()
+	if a.tray != nil {
+		a.tray.SetMenu(a.trayMenu())
+	}
+	if a.setWin != nil {
+		a.ss.applied = a.set.Clone()
+		a.setWin.Invalidate()
+	}
 }

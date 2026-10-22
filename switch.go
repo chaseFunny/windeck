@@ -7,6 +7,7 @@ import (
 	"github.com/egoist/mygo"
 
 	"windeck/internal/deck"
+	"windeck/internal/settings"
 	"windeck/internal/smart"
 	"windeck/internal/switcher"
 	"windeck/internal/wm"
@@ -36,6 +37,10 @@ func (a *App) key(e wm.KeyEvent) bool {
 			return false
 		}
 		return a.open(e.Shift)
+	}
+	if !a.set.ActionKeys && (e.Key == wm.KeyW || e.Key == wm.KeyM || e.Key == wm.KeyQ) && !e.Released {
+		// Turned off in Settings: kept from the app behind, and nothing.
+		return a.sw.Phase() != switcher.Searching
 	}
 	act, keep := a.sw.Key(e)
 	if keep {
@@ -128,10 +133,24 @@ func (a *App) do(act switcher.Action) {
 	}
 }
 
-// selectionMoved fetches a fresh picture of the highlighted window.
+// selectionMoved fetches a fresh picture of the highlighted window, and
+// of the rows around it, where Tab and the arrows go next: their pictures
+// are there by the time the highlight is.
 func (a *App) selectionMoved() {
-	if w, ok := a.deck.Window(a.sw.Selected()); ok {
+	sel := a.sw.Selected()
+	if w, ok := a.deck.Window(sel); ok {
 		a.captureLater(w)
+	}
+	for i, r := range a.ses.rows {
+		if r.id != sel || r.kind == rowGroup {
+			continue
+		}
+		for _, j := range []int{i + 1, i - 1, i + 2} {
+			if j >= 0 && j < len(a.ses.rows) && a.ses.rows[j].kind == rowWindow {
+				a.captureLater(a.ses.rows[j].win)
+			}
+		}
+		break
 	}
 	a.invalidatePanel()
 }
@@ -258,14 +277,18 @@ type row struct {
 	open  bool // a group's header: its windows show
 }
 
-// rebuildRows lays out the list: by app, in places that do not move, or,
-// for a query, the matches best first.
+// rebuildRows lays out the list: by app, in places that do not move, or
+// most recent first in the list layout, or, for a query, the matches best
+// first.
 func (a *App) rebuildRows() {
 	var rows []row
-	if a.ses.query == "" {
-		rows = a.groupRows()
-	} else {
+	switch {
+	case a.ses.query != "":
 		rows = a.resultRows()
+	case a.set.Layout == settings.LayoutList:
+		rows = a.listRows()
+	default:
+		rows = a.groupRows()
 	}
 	a.ses.rows = rows
 	var ids []wm.WindowID
@@ -305,6 +328,47 @@ func (a *App) groupRows() []row {
 		for _, ap := range a.windowless(have) {
 			rows = append(rows, row{kind: rowApp, id: appID(ap.PID), key: appKey(ap), name: ap.Name, path: ap.Path, pid: ap.PID, group: n})
 			n++
+		}
+	}
+	return rows
+}
+
+// listRows are the list layout's: the window the user is in first, then
+// the others in the cycle's order, the previous one, the predicted one
+// and the rest by recency; the apps without windows after them.
+func (a *App) listRows() []row {
+	byID := map[wm.WindowID]row{}
+	var all []wm.WindowID
+	have := map[int32]bool{}
+	for _, g := range a.deck.Groups() {
+		have[g.PID] = true
+		for _, w := range g.Windows {
+			byID[w.ID] = row{kind: rowWindow, id: w.ID, win: w, key: g.Key, name: g.Name, path: g.Path, pid: g.PID}
+			all = append(all, w.ID)
+		}
+	}
+	order := slices.Clone(a.sw.Cycle())
+	if n := len(order); n > 1 && order[n-1] == a.ses.focused {
+		order = append([]wm.WindowID{order[n-1]}, order[:n-1]...)
+	}
+	var rows []row
+	add := func(id wm.WindowID) {
+		if r, ok := byID[id]; ok {
+			r.group = len(rows)
+			rows = append(rows, r)
+			delete(byID, id)
+		}
+	}
+	for _, id := range order {
+		add(id)
+	}
+	// Windows the cycle does not have yet, as one just opened.
+	for _, id := range all {
+		add(id)
+	}
+	if a.set.ShowWindowless {
+		for _, ap := range a.windowless(have) {
+			rows = append(rows, row{kind: rowApp, id: appID(ap.PID), key: appKey(ap), name: ap.Name, path: ap.Path, pid: ap.PID, group: len(rows)})
 		}
 	}
 	return rows
@@ -359,6 +423,7 @@ func (a *App) setQuery(q string) {
 	}
 	a.ses.query = q
 	a.rebuildRows()
+	a.fitList()
 	// The best match takes the highlight.
 	for _, r := range a.ses.rows {
 		if r.kind != rowGroup {
@@ -376,15 +441,21 @@ func (a *App) showPanel(search bool) {
 	if !a.panel.IsVisible() {
 		d := a.panelDisplay()
 		a.ses.display = d
-		w := min(int(float64(d.WorkArea.Width)*0.84), 1360)
-		h := min(int(float64(d.WorkArea.Height)*0.8), 860)
-		w, h = max(w, min(760, d.WorkArea.Width)), max(h, min(480, d.WorkArea.Height))
+		w, h := a.panelSize(d, search)
 		a.panel.SetBounds(mygo.Rectangle{
 			X: d.WorkArea.X + (d.WorkArea.Width-w)/2, Y: d.WorkArea.Y + (d.WorkArea.Height-h)/2,
 			Width: w, Height: h,
 		})
 		a.ses.pointer = mygo.Screen.CursorScreenPoint()
 		a.selectionMoved()
+		if !a.ses.rounded {
+			wm.RoundWindow(a.panel.NativeHandle(), panelRadius)
+			wm.NoWindowAnimation(a.panel.NativeHandle())
+			a.ses.rounded = true
+		}
+	}
+	if search {
+		a.fitList()
 	}
 	if search {
 		a.panel.Show()
@@ -394,6 +465,35 @@ func (a *App) showPanel(search bool) {
 		a.panel.ShowInactive()
 	}
 	a.invalidatePanel()
+}
+
+// panelSize is the panel's on display d: most of the screen for tabs and
+// preview; for the list, as tall as its rows, up to most of the screen.
+func (a *App) panelSize(d mygo.Display, search bool) (int, int) {
+	W, H := d.WorkArea.Width, d.WorkArea.Height
+	if a.set.Layout == settings.LayoutList {
+		w := max(min(int(float64(W)*0.5), listWidth), min(480, W))
+		h := 2*listPad + max(len(a.ses.rows), 4)*listRowHeight
+		if search {
+			h += searchBlock
+		}
+		return w, min(h, int(float64(H)*0.8))
+	}
+	w := min(int(float64(W)*0.84), 1360)
+	h := min(int(float64(H)*0.8), 860)
+	return max(w, min(760, W)), max(h, min(480, H))
+}
+
+// fitList sizes the list layout's panel to its rows as they change with
+// the search, its top edge kept so that the search field stays put.
+func (a *App) fitList() {
+	if a.set.Layout != settings.LayoutList || a.panel == nil || !a.panel.IsVisible() {
+		return
+	}
+	_, h := a.panelSize(a.ses.display, a.sw.Phase() == switcher.Searching)
+	if b := a.panel.Bounds(); b.Height != h {
+		a.panel.SetBounds(mygo.Rectangle{X: b.X, Y: b.Y, Width: b.Width, Height: h})
+	}
 }
 
 // panelDisplay is where the panel shows: the display of the window the
@@ -411,6 +511,9 @@ func (a *App) panelDisplay() mygo.Display {
 func (a *App) hidePanel() {
 	if a.panel != nil && a.panel.IsVisible() {
 		a.panel.Hide()
+		// Drawn empty while hidden: the next switch never shows this
+		// one's last frame for an instant before its own.
+		a.panel.Invalidate()
 	}
 	a.ses.hovered = 0
 	a.ses.focusSearch = false

@@ -16,6 +16,13 @@ const (
 	ShortcutCommand = "command"
 )
 
+// Layouts of the panel: tabs grouped by app beside a large preview, or a
+// list of icons and titles alone, the most recent first.
+const (
+	LayoutTabs = "tabs"
+	LayoutList = "list"
+)
+
 // Settings are the user's choices.
 type Settings struct {
 	// Onboarded tells that the user went through the first launch's
@@ -23,6 +30,8 @@ type Settings struct {
 	Onboarded bool `json:"onboarded"`
 	// Shortcut is ShortcutOption or ShortcutCommand.
 	Shortcut string `json:"shortcut"`
+	// Layout is LayoutTabs (the default) or LayoutList.
+	Layout string `json:"layout"`
 	// Appearance is "light" (the default), "dark" or "system".
 	Appearance string `json:"appearance"`
 	// Language is "" for the system's, "en" or "zh-Hans".
@@ -46,6 +55,14 @@ type Settings struct {
 	Excluded []string `json:"excluded"`
 	// OpenAtLogin starts Windeck as the user logs in.
 	OpenAtLogin bool `json:"openAtLogin"`
+	// ActionKeys has W, M and Q close, minimize and quit from the
+	// switcher; off, they do nothing there.
+	ActionKeys bool `json:"actionKeys"`
+	// AutoUpdate checks for a new version once a day.
+	AutoUpdate bool `json:"autoUpdate"`
+	// AutoInstall installs the new versions found without asking: they
+	// run from the next launch.
+	AutoInstall bool `json:"autoInstall"`
 }
 
 // DefaultExcluded are password managers, the keychain and banking apps.
@@ -67,11 +84,14 @@ var DefaultExcluded = []string{
 func Default() Settings {
 	return Settings{
 		Shortcut:   ShortcutOption,
+		Layout:     LayoutTabs,
 		Appearance: "light",
 		QuickDelay: 150,
 		Predict:    true,
 		Personal:   true,
 		Previews:   true,
+		ActionKeys: true,
+		AutoUpdate: true,
 		Excluded:   slices.Clone(DefaultExcluded),
 	}
 }
@@ -88,6 +108,9 @@ func Load(path string) Settings {
 func (s Settings) normalized() Settings {
 	if s.Shortcut != ShortcutCommand {
 		s.Shortcut = ShortcutOption
+	}
+	if s.Layout != LayoutList {
+		s.Layout = LayoutTabs
 	}
 	switch s.Appearance {
 	case "light", "dark", "system":

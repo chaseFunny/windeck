@@ -30,4 +30,8 @@ func TestNormalizes(t *testing.T) {
 	if s.Shortcut != ShortcutOption || s.Appearance != "light" || s.QuickDelay != 600 || s.Language != "" {
 		t.Fatalf("normalized %+v", s)
 	}
+	// Settings saved before a setting was added get its default.
+	if !s.ActionKeys || !s.AutoUpdate || s.AutoInstall {
+		t.Fatalf("new settings' defaults %+v", s)
+	}
 }

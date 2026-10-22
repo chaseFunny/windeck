@@ -30,6 +30,7 @@ type previewCache struct {
 	byID      map[wm.WindowID]*preview
 	order     []wm.WindowID // the most recently shown first
 	capturing map[wm.WindowID]bool
+	failed    map[wm.WindowID]bool // captures that gave nothing
 }
 
 // mayCapture reports whether Windeck may take a window's picture: the
@@ -55,8 +56,11 @@ func (a *App) captureLater(w wm.Window) {
 		a.update(func() {
 			delete(a.shots.capturing, w.ID)
 			if img == nil {
+				a.shots.failed[w.ID] = true
+				a.invalidatePanel()
 				return
 			}
+			delete(a.shots.failed, w.ID)
 			if _, ok := a.deck.Window(w.ID); ok {
 				a.pool.Put(uint32(w.ID), img, at)
 			}
@@ -64,8 +68,23 @@ func (a *App) captureLater(w wm.Window) {
 	}()
 }
 
+// picturePending tells that a row's picture is not here yet but will be:
+// a window that may be captured, whose capture did not fail.
+func (a *App) picturePending(r row) bool {
+	return r.kind == rowWindow && a.mayCapture(r.win) && !a.shots.failed[r.win.ID] &&
+		r.win.Bounds.W > 0 && r.win.Bounds.H > 0
+}
+
+// showsPicture tells whether the preview may show a window's picture:
+// not once previews are off, Screen Recording is taken back, or the app
+// is on the privacy list, whatever pictures are kept.
+func (a *App) showsPicture(w wm.Window) bool {
+	return a.set.Previews && a.canCapture && !a.set.IsExcluded(w.BundleID)
+}
+
 // previewOf returns a window's picture as a bitmap, nil when there is
 // none.
+
 func (a *App) previewOf(id wm.WindowID) *ui.Bitmap {
 	c := &a.shots
 	shot, ok := a.pool.Get(uint32(id))
@@ -98,6 +117,11 @@ func (a *App) previewOf(id wm.WindowID) *ui.Bitmap {
 
 // keep forgets the bitmaps of windows that are gone.
 func (c *previewCache) keep(a *App) {
+	for id := range c.failed {
+		if _, ok := a.deck.Window(id); !ok {
+			delete(c.failed, id)
+		}
+	}
 	c.order = slices.DeleteFunc(c.order, func(id wm.WindowID) bool {
 		if _, ok := a.deck.Window(id); !ok {
 			delete(c.byID, id)
@@ -110,6 +134,7 @@ func (c *previewCache) keep(a *App) {
 func (c *previewCache) clear() {
 	c.byID = map[wm.WindowID]*preview{}
 	c.order = nil
+	c.failed = map[wm.WindowID]bool{}
 }
 
 // iconCache is the apps' icons, by their bundles' paths and size.

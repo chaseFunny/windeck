@@ -16,7 +16,7 @@
   },
   "aboutWebsite": "Website",
   "@aboutWebsite": {
-    "description": "A button opening windeck.app."
+    "description": "A button opening the website."
   },
   "appearanceDark": "Dark",
   "@appearanceDark": {
@@ -33,16 +33,6 @@
   "badgeDesktop": "Desktop {n}",
   "@badgeDesktop": {
     "description": "A window's Space, in the preview's header.",
-    "placeholders": {
-      "n": {
-        "type": "int",
-        "example": "2"
-      }
-    }
-  },
-  "badgeDesktopShort": "D{n}",
-  "@badgeDesktopShort": {
-    "description": "A window's Space, compact in the list.",
     "placeholders": {
       "n": {
         "type": "int",
@@ -71,6 +61,10 @@
     "description": "A running app without windows."
   },
   "commonCancel": "Cancel",
+  "commonOK": "OK",
+  "@commonOK": {
+    "description": "A button closing a message."
+  },
   "hintClear": "Clear",
   "@hintClear": {
     "description": "The key hint of Escape while searching."
@@ -91,7 +85,7 @@
   "@hintNext": {
     "description": "The key hint of Tab."
   },
-  "hintQuit": "Quit app",
+  "hintQuit": "Quit",
   "@hintQuit": {
     "description": "The key hint of Q."
   },
@@ -107,6 +101,22 @@
   "@languageSystem": {
     "description": "The system's language."
   },
+  "layoutList": "List",
+  "@layoutList": {
+    "description": "The panel layout setting."
+  },
+  "layoutListDetail": "Icons and titles alone, the most recent first: compact and quick.",
+  "@layoutListDetail": {
+    "description": "The panel layout setting."
+  },
+  "layoutTabs": "Tabs and preview",
+  "@layoutTabs": {
+    "description": "The panel layout setting."
+  },
+  "layoutTabsDetail": "Windows as tabs grouped by app, with a large preview to be sure.",
+  "@layoutTabsDetail": {
+    "description": "The panel layout setting."
+  },
   "licenseActivate": "Activate",
   "licenseActive": "Activated",
   "@licenseActive": {
@@ -114,8 +124,8 @@
   },
   "licenseBuy": "Buy Windeck Pro",
   "licenseDeactivate": "Deactivate this Mac",
-  "licenseDeactivated": "This Mac is deactivated: the key can serve another one.",
   "licenseDeactivateDetail": "Frees one of the license's three Macs.",
+  "licenseDeactivated": "This Mac is deactivated: the key can serve another one.",
   "licenseEnter": "License key",
   "licenseFree": "Free",
   "licenseInvalid": "This key is not valid, or it is active on three Macs already.",
@@ -148,6 +158,20 @@
   "onboardShortcut": "Choose your shortcut",
   "onboardShortcutDetail": "Hold it and press Tab to go through your windows; let go to switch.",
   "onboardShortcutNote": "You can change it any time in Settings.",
+  "onboardStep": "Step {n} of {total}",
+  "@onboardStep": {
+    "description": "The onboarding steps, as 1 of 2.",
+    "placeholders": {
+      "n": {
+        "type": "int",
+        "example": "1"
+      },
+      "total": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
   "onboardTitle": "Welcome to Windeck",
   "@onboardTitle": {
     "description": "The onboarding window's title."
@@ -158,6 +182,10 @@
   "pageGeneral": "General",
   "pageLicense": "License",
   "pagePrivacy": "Privacy",
+  "pageShortcuts": "Shortcuts",
+  "@pageShortcuts": {
+    "description": "A page of Settings."
+  },
   "pageSmart": "Smart",
   "permAccessibility": "Accessibility",
   "permAccessibilityDetail": "Lists, raises, closes and minimizes windows.",
@@ -188,11 +216,29 @@
     }
   },
   "previewOff": "Previews are turned off in Settings.",
-  "privacyAdd": "Add an app",
+  "privacyAdd": "Add App…",
   "privacyData": "Data",
   "privacyDataFolder": "Local data folder",
+  "privacyEmpty": "No apps. Windeck captures every window.",
+  "@privacyEmpty": {
+    "description": "The privacy list, empty."
+  },
   "privacyExcluded": "Privacy list",
   "privacyExcludedDetail": "Windeck never captures these apps' windows, never keeps their titles, and learns nothing from them.",
+  "privacyNotInstalled": "Not installed",
+  "@privacyNotInstalled": {
+    "description": "A privacy list app that is not on this Mac."
+  },
+  "privacyNotInstalledMore": "{n, plural, one {# more app, not installed on this Mac} other {# more apps, not installed on this Mac}}",
+  "@privacyNotInstalledMore": {
+    "description": "The privacy list: the folded row of apps not installed.",
+    "placeholders": {
+      "n": {
+        "type": "int",
+        "example": "6"
+      }
+    }
+  },
   "privacyPermissions": "Permissions",
   "privacyPromise": "Window pictures, your habits and what Windeck learns stay on this Mac. Titles, pictures and app lists are never sent anywhere.",
   "privacyRemove": "Remove",
@@ -203,10 +249,28 @@
   "resetTitle": "Reset learned data",
   "rowClose": "Close window",
   "rowMinimize": "Minimize window",
+  "searchNoResults": "No windows match “{query}”",
+  "@searchNoResults": {
+    "description": "The list, when the search finds nothing.",
+    "placeholders": {
+      "query": {
+        "type": "String",
+        "example": "mail"
+      }
+    }
+  },
+  "searchNoResultsHint": "Try fewer letters, or part of the app’s name.",
+  "@searchNoResultsHint": {
+    "description": "Under searchNoResults."
+  },
   "searchPlaceholder": "Search windows",
   "settingsAppearance": "Appearance",
   "settingsBehavior": "Behavior",
   "settingsLanguage": "Language",
+  "settingsLayout": "Layout",
+  "@settingsLayout": {
+    "description": "The panel layout setting."
+  },
   "settingsLook": "Look",
   "settingsOpenAtLogin": "Open at login",
   "settingsPreviews": "Window previews",
@@ -220,6 +284,10 @@
   "@settingsTitle": {
     "description": "The Settings window's title."
   },
+  "settingsUpdates": "Updates",
+  "@settingsUpdates": {
+    "description": "A section of the About page."
+  },
   "settingsWindowless": "Show apps without windows",
   "settingsWindowlessDetail": "Listed at the end, to bring them forward.",
   "shortcutCommandDetail": "Takes over ⌘Tab: for heavy multi-window use and Windows habits.",
@@ -227,6 +295,84 @@
   "shortcutOptionDetail": "Keeps the system's ⌘Tab for apps; ⌥Tab goes to windows.",
   "shortcutOptionTitle": "Option-Tab beside Command-Tab",
   "shortcutRecommended": "Recommended",
+  "shortcutsActionKeys": "Act on windows with keys",
+  "@shortcutsActionKeys": {
+    "description": "A setting: W, M and Q act on the highlighted window."
+  },
+  "shortcutsActionKeysDetail": "Off, W, M and Q do nothing in the switcher.",
+  "@shortcutsActionKeysDetail": {
+    "description": "The setting's description."
+  },
+  "shortcutsActions": "Window actions",
+  "@shortcutsActions": {
+    "description": "A heading of the Shortcuts page."
+  },
+  "shortcutsCancel": "Cancel",
+  "@shortcutsCancel": {
+    "description": "What Escape does."
+  },
+  "shortcutsClose": "Close the window",
+  "@shortcutsClose": {
+    "description": "What W does."
+  },
+  "shortcutsInSwitcher": "In the switcher",
+  "@shortcutsInSwitcher": {
+    "description": "A heading of the Shortcuts page: the keys while the switcher shows."
+  },
+  "shortcutsJump": "Previous or next app",
+  "@shortcutsJump": {
+    "description": "What the left and right arrows do."
+  },
+  "shortcutsMinimize": "Minimize the window",
+  "@shortcutsMinimize": {
+    "description": "What M does."
+  },
+  "shortcutsMove": "Move up and down the list",
+  "@shortcutsMove": {
+    "description": "What the up and down arrows do."
+  },
+  "shortcutsNext": "Next window",
+  "@shortcutsNext": {
+    "description": "What Tab does in the switcher."
+  },
+  "shortcutsOpen": "Open the switcher",
+  "@shortcutsOpen": {
+    "description": "A heading of the Shortcuts page."
+  },
+  "shortcutsOr": "or",
+  "@shortcutsOr": {
+    "description": "Between two keys that do the same."
+  },
+  "shortcutsPrevious": "Previous window",
+  "@shortcutsPrevious": {
+    "description": "What Shift-Tab does in the switcher."
+  },
+  "shortcutsQuit": "Quit its app",
+  "@shortcutsQuit": {
+    "description": "What Q does."
+  },
+  "shortcutsRelease": "Release {key}",
+  "@shortcutsRelease": {
+    "description": "A key hint: releasing the shortcut's modifier.",
+    "placeholders": {
+      "key": {
+        "type": "String",
+        "example": "⌥"
+      }
+    }
+  },
+  "shortcutsSearch": "Search",
+  "@shortcutsSearch": {
+    "description": "What Space or slash does."
+  },
+  "shortcutsSearchNote": "While searching, ↑ ↓ move, Return switches and Esc clears the query.",
+  "@shortcutsSearchNote": {
+    "description": "The footnote of the keys."
+  },
+  "shortcutsSwitch": "Switch to the highlighted window",
+  "@shortcutsSwitch": {
+    "description": "What releasing the modifier, or Return, does."
+  },
   "smartLocalNote": "Learned on this Mac only, from the windows you switch to.",
   "smartNeedsPro": "Smart features are part of Windeck Pro. Activate a license to turn them on.",
   "smartPersonal": "Rank search by habit",
@@ -237,6 +383,26 @@
   "statKeys": "keys per switch",
   "statToday": "switches today",
   "statTopTwo": "found in the first two",
+  "trayCheckUpdates": "Check for Updates…",
+  "@trayCheckUpdates": {
+    "description": "A menu bar item."
+  },
+  "trayLayout": "Layout",
+  "@trayLayout": {
+    "description": "The panel layout setting."
+  },
+  "trayPermissions": "Permissions & Shortcut…",
+  "trayQuit": "Quit Windeck",
+  "trayRestartUpdate": "Restart to Update to {version}",
+  "@trayRestartUpdate": {
+    "description": "A menu bar item, once an update was installed in the background.",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.1.0"
+      }
+    }
+  },
   "traySearch": "Search Windows ({shortcut}, Space)",
   "@traySearch": {
     "placeholders": {
@@ -246,7 +412,145 @@
       }
     }
   },
-  "trayPermissions": "Permissions & Shortcut…",
-  "trayQuit": "Quit Windeck",
-  "traySettings": "Settings…"
+  "traySettings": "Settings…",
+  "updatesAuto": "Check for updates automatically",
+  "@updatesAuto": {
+    "description": "A setting."
+  },
+  "updatesAutoDetail": "Once a day, in the background.",
+  "@updatesAutoDetail": {
+    "description": "The setting's description."
+  },
+  "updatesAvailable": "Windeck {version} is available",
+  "@updatesAvailable": {
+    "description": "The update window's title line.",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.1.0"
+      }
+    }
+  },
+  "updatesAvailableDetail": "You have {current}.",
+  "@updatesAvailableDetail": {
+    "description": "Under the title line.",
+    "placeholders": {
+      "current": {
+        "type": "String",
+        "example": "1.0.0"
+      }
+    }
+  },
+  "updatesCheckNow": "Check Now",
+  "@updatesCheckNow": {
+    "description": "A button."
+  },
+  "updatesChecking": "Checking for updates…",
+  "@updatesChecking": {
+    "description": "The update window."
+  },
+  "updatesDisabled": "This copy can't update itself. Download new versions from the website.",
+  "@updatesDisabled": {
+    "description": "Development builds, or an app where it cannot write."
+  },
+  "updatesDownloading": "Downloading Windeck {version}…",
+  "@updatesDownloading": {
+    "description": "The update window.",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.1.0"
+      }
+    }
+  },
+  "updatesFailed": "Couldn't check for updates",
+  "@updatesFailed": {
+    "description": "The update window."
+  },
+  "updatesFailedDetail": "Check your connection and try again.",
+  "@updatesFailedDetail": {
+    "description": "The update window."
+  },
+  "updatesInstall": "Download and install automatically",
+  "@updatesInstall": {
+    "description": "A setting."
+  },
+  "updatesInstallButton": "Install and Relaunch",
+  "@updatesInstallButton": {
+    "description": "The update window's primary button."
+  },
+  "updatesInstallDetail": "New versions start the next time Windeck opens.",
+  "@updatesInstallDetail": {
+    "description": "The setting's description."
+  },
+  "updatesInstallFailed": "Couldn't install the update",
+  "@updatesInstallFailed": {
+    "description": "The update window."
+  },
+  "updatesLast": "Last checked {when}",
+  "@updatesLast": {
+    "description": "When the app last checked.",
+    "placeholders": {
+      "when": {
+        "type": "String",
+        "example": "2026-10-22 14:02"
+      }
+    }
+  },
+  "updatesLater": "Later",
+  "@updatesLater": {
+    "description": "A button."
+  },
+  "updatesLatest": "You're up to date",
+  "@updatesLatest": {
+    "description": "The update window."
+  },
+  "updatesLatestDetail": "Windeck {version} is the newest version.",
+  "@updatesLatestDetail": {
+    "description": "The update window.",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.0.0"
+      }
+    }
+  },
+  "updatesNever": "Not checked yet",
+  "@updatesNever": {
+    "description": "The app never checked."
+  },
+  "updatesNotes": "What's new",
+  "@updatesNotes": {
+    "description": "Above the release notes."
+  },
+  "updatesPermissionNote": "After the update, macOS may ask you to allow Accessibility again.",
+  "@updatesPermissionNote": {
+    "description": "A note in the update window."
+  },
+  "updatesReady": "Windeck {version} is ready",
+  "@updatesReady": {
+    "description": "The update window, once the update is installed.",
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.1.0"
+      }
+    }
+  },
+  "updatesReadyDetail": "Restart Windeck to use it.",
+  "@updatesReadyDetail": {
+    "description": "Under the title line."
+  },
+  "updatesRelaunch": "Relaunch",
+  "@updatesRelaunch": {
+    "description": "A button relaunching the app into the update."
+  },
+  "updatesSkip": "Skip This Version",
+  "@updatesSkip": {
+    "description": "A button."
+  },
+  "updatesTitle": "Software Update",
+  "@updatesTitle": {
+    "description": "The update window's title."
+  }
 }

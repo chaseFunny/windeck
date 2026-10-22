@@ -1,115 +1,147 @@
 package main
 
-import "github.com/egoist/mygo/ui"
+import (
+	_ "embed"
 
-// palette is Windeck's colors, for the light appearance, its default, and
-// the dark one.
+	"github.com/egoist/mygo/ui"
+)
+
+// Windeck's look is the hz design system's: white, near-black text and
+// one violet, used sparingly; grays with a touch of violet; flat colors,
+// layers told apart by background and a 1-point border, shadows on what
+// floats alone. Its sizes come from fixed steps:
+//
+//	corners  6 (tags), 10 (buttons, fields, rows), 16 (cards, the panel)
+//	spacing  4, 8, 12, 16, 24, 32, 48
+//	type     20/28 page titles, 16/24 sections, 14/22 body, 13/20 secondary, 12/16 small
+//	weights  400, 500, 700
+//
+// Every color below is one of its tokens; the views take them from here,
+// never as values of their own.
+
+const (
+	radiusTag  = 6
+	radiusCtl  = 10
+	radiusCard = 16
+
+	fontUI      = "Inter"  // with the system's Chinese font after it
+	fontDisplay = "Nunito" // the welcome's title and empty states alone
+)
+
 type palette struct {
 	dark bool
 
-	card       ui.Color // the panel
-	cardBorder ui.Color
-	shadow     ui.Color
-	shadow2    ui.Color
-	sidebar    ui.Color // the list's side of the panel
-	divider    ui.Color
+	bgPage     ui.Color // --bg-page
+	bgSubtle   ui.Color // --bg-subtle: sidebars, the window behind cards
+	bgMuted    ui.Color // --bg-muted: hover, fields, gray tags
+	bgElevated ui.Color // --bg-elevated: the panel
+	border     ui.Color // --border
+	borderBold ui.Color // --border-strong
 
-	text      ui.Color
-	textMuted ui.Color // app names, hints
-	textFaint ui.Color // the cycle's numbers, counts
+	text      ui.Color // --text-primary
+	textMuted ui.Color // --text-secondary
+	textFaint ui.Color // --text-tertiary: placeholders and notes alone
 
-	rowHover    ui.Color
-	rowSelected ui.Color
-	rowShadow   ui.Color
-	guide       ui.Color // the line down a group's windows
+	brand       ui.Color // --brand
+	brandHover  ui.Color
+	brandText   ui.Color // --brand-text
+	brandSubtle ui.Color // --brand-subtle: the chosen row, tags, the big bubble
+	brandOnSub  ui.Color // --brand-subtle-text
+	onBrand     ui.Color
 
-	field      ui.Color // the search field
-	fieldFocus ui.Color
-	chip       ui.Color // status badges
-	chipText   ui.Color
-	kbd        ui.Color
-	kbdBorder  ui.Color
+	success ui.Color
+	warning ui.Color
+	danger  ui.Color
+	focus   ui.Color // --focus-ring
 
-	accent     ui.Color
-	accentSoft ui.Color
-	danger     ui.Color
-	star       ui.Color // the predicted window's mark
-
-	stage      ui.Color // behind the preview
-	frame      ui.Color // around the preview
-	windowBack ui.Color // the settings and onboarding windows
-	surface    ui.Color // their cards
+	shadow ui.Color // the panel's, lg
 }
 
 var lightPalette = palette{
-	card:       ui.RGBA(250, 250, 252, 0.97),
-	cardBorder: ui.RGBA(0, 0, 0, 0.08),
-	shadow:     ui.RGBA(18, 22, 40, 0.20),
-	shadow2:    ui.RGBA(18, 22, 40, 0.08),
-	sidebar:    ui.RGBA(240, 242, 246, 0.9),
-	divider:    ui.RGBA(0, 0, 0, 0.07),
+	bgPage:     ui.Hex("#FFFFFF"),
+	bgSubtle:   ui.Hex("#F7F7FA"),
+	bgMuted:    ui.Hex("#EFEFF4"),
+	bgElevated: ui.Hex("#FFFFFF"),
+	border:     ui.Hex("#E2E2EA"),
+	borderBold: ui.Hex("#C9C9D4"),
 
-	text:      ui.Hex("#1d1d1f"),
-	textMuted: ui.Hex("#6b6b76"),
-	textFaint: ui.Hex("#a1a1ab"),
+	text:      ui.Hex("#1C1C23"),
+	textMuted: ui.Hex("#5E5E6E"),
+	textFaint: ui.Hex("#7C7C8C"),
 
-	rowHover:    ui.RGBA(0, 0, 0, 0.045),
-	rowSelected: ui.Hex("#ffffff"),
-	rowShadow:   ui.RGBA(20, 24, 50, 0.10),
-	guide:       ui.RGBA(0, 0, 0, 0.10),
+	brand:       ui.Hex("#5A4BC6"),
+	brandHover:  ui.Hex("#4A3CA8"),
+	brandText:   ui.Hex("#5A4BC6"),
+	brandSubtle: ui.Hex("#F4F3FD"),
+	brandOnSub:  ui.Hex("#4A3CA8"),
+	onBrand:     ui.Hex("#FFFFFF"),
 
-	field:      ui.RGBA(0, 0, 0, 0.045),
-	fieldFocus: ui.Hex("#ffffff"),
-	chip:       ui.RGBA(0, 0, 0, 0.055),
-	chipText:   ui.Hex("#5d5d68"),
-	kbd:        ui.Hex("#ffffff"),
-	kbdBorder:  ui.RGBA(0, 0, 0, 0.12),
+	success: ui.Hex("#2E9E6A"),
+	warning: ui.Hex("#E07A2F"),
+	danger:  ui.Hex("#D9433F"),
+	focus:   ui.RGBA(90, 75, 198, 0.35),
 
-	accent:     ui.Hex("#2f6bff"),
-	accentSoft: ui.RGBA(47, 107, 255, 0.12),
-	danger:     ui.Hex("#e5484d"),
-	star:       ui.Hex("#f5a524"),
-
-	stage:      ui.RGBA(0, 0, 0, 0.025),
-	frame:      ui.RGBA(0, 0, 0, 0.10),
-	windowBack: ui.Hex("#f5f6f8"),
-	surface:    ui.Hex("#ffffff"),
+	shadow: ui.RGBA(28, 28, 35, 0.12),
 }
 
 var darkPalette = palette{
 	dark:       true,
-	card:       ui.RGBA(30, 30, 34, 0.97),
-	cardBorder: ui.RGBA(255, 255, 255, 0.09),
-	shadow:     ui.RGBA(0, 0, 0, 0.5),
-	shadow2:    ui.RGBA(0, 0, 0, 0.25),
-	sidebar:    ui.RGBA(24, 24, 28, 0.9),
-	divider:    ui.RGBA(255, 255, 255, 0.07),
+	bgPage:     ui.Hex("#121216"),
+	bgSubtle:   ui.Hex("#1C1C23"),
+	bgMuted:    ui.Hex("#2E2E38"),
+	bgElevated: ui.Hex("#24242C"),
+	border:     ui.Hex("#2E2E38"),
+	borderBold: ui.Hex("#464654"),
 
-	text:      ui.Hex("#ececf0"),
-	textMuted: ui.Hex("#a3a3ae"),
-	textFaint: ui.Hex("#73737f"),
+	text:      ui.Hex("#F7F7FA"),
+	textMuted: ui.Hex("#A2A2B0"),
+	textFaint: ui.Hex("#7C7C8C"),
 
-	rowHover:    ui.RGBA(255, 255, 255, 0.05),
-	rowSelected: ui.RGBA(255, 255, 255, 0.10),
-	rowShadow:   ui.RGBA(0, 0, 0, 0.3),
-	guide:       ui.RGBA(255, 255, 255, 0.12),
+	brand:       ui.Hex("#7366D8"),
+	brandHover:  ui.Hex("#6456D0"),
+	brandText:   ui.Hex("#B5ACF1"),
+	brandSubtle: ui.Hex("#282160"),
+	brandOnSub:  ui.Hex("#D3CDF7"),
+	onBrand:     ui.Hex("#FFFFFF"),
 
-	field:      ui.RGBA(255, 255, 255, 0.06),
-	fieldFocus: ui.RGBA(255, 255, 255, 0.09),
-	chip:       ui.RGBA(255, 255, 255, 0.08),
-	chipText:   ui.Hex("#b8b8c2"),
-	kbd:        ui.RGBA(255, 255, 255, 0.08),
-	kbdBorder:  ui.RGBA(255, 255, 255, 0.14),
+	success: ui.Hex("#5FC795"),
+	warning: ui.Hex("#F0A46A"),
+	danger:  ui.Hex("#F07C78"),
+	focus:   ui.RGBA(181, 172, 241, 0.45),
 
-	accent:     ui.Hex("#6b9bff"),
-	accentSoft: ui.RGBA(107, 155, 255, 0.16),
-	danger:     ui.Hex("#ff6b6b"),
-	star:       ui.Hex("#ffc04d"),
+	shadow: ui.RGBA(0, 0, 0, 0.45),
+}
 
-	stage:      ui.RGBA(255, 255, 255, 0.025),
-	frame:      ui.RGBA(255, 255, 255, 0.10),
-	windowBack: ui.Hex("#1c1c20"),
-	surface:    ui.Hex("#26262b"),
+// brandTheme is MyGo's widgets in the same colors: buttons, switches,
+// segmented controls and focus rings in the violet, Inter for text.
+func brandTheme(dark bool) *ui.Theme {
+	p, t := &lightPalette, ui.LightTheme()
+	if dark {
+		p, t = &darkPalette, ui.DarkTheme()
+	}
+	t.Background = p.bgPage
+	t.Surface, t.SurfaceHover, t.SurfacePressed = p.bgPage, p.bgSubtle, p.bgMuted
+	t.Border = p.borderBold
+	t.Text, t.TextMuted = p.text, p.textMuted
+	t.Accent, t.AccentHover, t.AccentPressed, t.AccentText = p.brand, p.brandHover, p.brandHover, p.onBrand
+	t.Danger, t.Warning, t.Success = p.danger, p.warning, p.success
+	t.Selection = p.brand.Alpha(0.22)
+	t.Focus = p.focus
+	t.Radius = radiusCtl
+	t.FontSize = 14
+	t.Font = fontUI
+	return t
+}
+
+// themed sets a window's theme for the frame and returns its palette:
+// every view starts with it.
+func themed(c *ui.Context) *palette {
+	dark := c.Theme().Dark
+	c.SetTheme(brandTheme(dark))
+	if dark {
+		return &darkPalette
+	}
+	return &lightPalette
 }
 
 func paletteFor(c *ui.Context) *palette {
@@ -117,4 +149,25 @@ func paletteFor(c *ui.Context) *palette {
 		return &darkPalette
 	}
 	return &lightPalette
+}
+
+var (
+	//go:embed resources/fonts/Inter-Regular.ttf
+	interRegular []byte
+	//go:embed resources/fonts/Inter-Medium.ttf
+	interMedium []byte
+	//go:embed resources/fonts/Inter-Bold.ttf
+	interBold []byte
+	//go:embed resources/fonts/Nunito.ttf
+	nunito []byte
+)
+
+// registerFonts makes Inter and Nunito ready for text: they are in the
+// app, not on every Mac. Chinese text falls back to the system's font,
+// as the design's font stack does.
+func registerFonts() {
+	for _, f := range [][]byte{interRegular, interMedium, interBold} {
+		ui.RegisterFont(f, fontUI)
+	}
+	ui.RegisterFont(nunito, fontDisplay)
 }

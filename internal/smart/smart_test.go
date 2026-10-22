@@ -2,6 +2,7 @@ package smart
 
 import (
 	"path/filepath"
+	"slices"
 	"testing"
 	"time"
 )
@@ -112,5 +113,22 @@ func TestSaveLoadReset(t *testing.T) {
 	l.Reset()
 	if len(l.Apps) != 0 || l.Metrics().Total != 0 {
 		t.Fatal("reset kept data")
+	}
+}
+
+func TestPositions(t *testing.T) {
+	for _, tc := range []struct {
+		q, s string
+		want []int
+	}{
+		{"go", "PicGo", []int{3, 4}},
+		{"pg", "PicGo", []int{0, 3}},
+		{"窗签", "窗签产品文档", []int{0, 1}},
+		{"xyz", "PicGo", nil},
+		{"", "PicGo", nil},
+	} {
+		if got := Positions(tc.q, tc.s); !slices.Equal(got, tc.want) {
+			t.Errorf("Positions(%q, %q) = %v, want %v", tc.q, tc.s, got, tc.want)
+		}
 	}
 }

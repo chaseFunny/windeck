@@ -1,4 +1,3 @@
-import '@fontsource-variable/inter';
 import '../styles/global.css';
 import type { JSX } from 'solid-js';
 

@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.1.0
+
+- Updates: Windeck checks its releases once a day and from the menu bar's "Check for Updates…", shows what is new and installs the signed update, then relaunches; or, chosen in Settings → About, installs it without asking for the next launch. Updates are signed, and only those signed with Windeck's key are installed.
+- A Shortcuts page in Settings: the shortcut and how long it is held, every key of the switcher, and a switch to turn W, M and Q off.
+- The switcher no longer flashes: a window whose picture is on the way shows its outline until the picture fills it, instead of its app's icon; the pictures of the windows around the highlight are taken ahead; the highlight moves with the keys at once; the panel shows and hides without the system's fade and never shows the last switch's frame.
+- A second layout, List: the windows as one column of icons and titles, the most recent first, the panel as tall as its rows. Choose it in Settings → General → Layout, or from the menu bar's Layout menu.
+- The hz design system throughout, the app and the site: the violet #5A4BC6, Inter and Nunito, Lucide icons, flat cards, one primary button a screen; a new flat icon; the onboarding's title in a bubble; the hz mark in About and the site's footer.
+- The site follows the hz landing page: one big bubble, the product on a gray block, three cards, text and pictures taking turns, facts that are measured, a dark ending.
+- The panel floats on the system's material with continuous corners and the system's shadow; the highlighted window is a tab, as a browser's.
+- Titles in the list drop the app's name they repeat ("Page - Google Chrome - Work" reads "Page") and line up on one edge; search shows the letters it matched in bold, and says so when nothing matches.
+- Settings look like System Settings: colored icons in a sidebar on its material, ⌘1 to ⌘6 for the pages, the shortcut as keys to choose between, the privacy list with the apps' names and icons, apps not installed folded away, and a menu to add one.
+- The onboarding's permissions in one group, with the step shown in the footer; Return goes on.
+- Fixed: Quit in the menu bar, and SIGTERM, did not quit.
+- Fixed: turning previews off left the pictures kept showing, and kept.
+
 ## 1.0.0
 
 The first version.

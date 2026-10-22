@@ -23,6 +23,7 @@ func main() {
 	// A menu bar app: no Dock icon, no app switcher entry of its own.
 	mygo.App.SetActivationPolicy(mygo.ActivationPolicyAccessory)
 	mygo.App.OnWindowAllClosed(func() {})
+	registerFonts()
 	a := newApp()
 	mygo.Theme.SetSource(themeSource(a.set.Appearance))
 	mygo.App.SetLocale(a.set.Language)
@@ -35,7 +36,10 @@ func main() {
 		}
 	})
 	mygo.App.OnSecondInstance(func([]string, string) { a.openSettings() })
-	mygo.App.OnBeforeQuit(func(*mygo.QuitEvent) { a.shutdown() })
+	mygo.App.OnBeforeQuit(func(*mygo.QuitEvent) {
+		a.quitting = true
+		a.shutdown()
+	})
 	mygo.App.WhenReady(a.start)
 	if err := mygo.App.Run(); err != nil {
 		log.Fatal(err)

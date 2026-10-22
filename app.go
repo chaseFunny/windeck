@@ -22,13 +22,14 @@ import (
 // App is Windeck's state. It lives on the main thread: other goroutines
 // change it through update.
 type App struct {
-	dir   string // Windeck's folder of Application Support
-	set   settings.Settings
-	lic   license.State
-	model *smart.Model
-	pool  *snapshot.Pool
-	deck  *deck.Deck
-	sw    switcher.Switcher
+	quitting bool   // Windeck is quitting: the panel closes too
+	dir      string // Windeck's folder of Application Support
+	set      settings.Settings
+	lic      license.State
+	model    *smart.Model
+	pool     *snapshot.Pool
+	deck     *deck.Deck
+	sw       switcher.Switcher
 	// apps are the running apps, for those without windows.
 	apps []wm.App
 
@@ -46,12 +47,14 @@ type App struct {
 	shots   previewCache
 	refresh refresher
 
-	ss settingsState
-	ob onboardingState
+	ss  settingsState
+	ob  onboardingState
+	upd updateState
 }
 
 // session is a switch, from the shortcut pressed to the switch made.
 type session struct {
+	rounded   bool // the panel has its corners
 	query     string
 	searchBuf string // what the search field holds
 	focused   wm.WindowID
@@ -80,12 +83,15 @@ func newApp() *App {
 		home, _ := os.UserHomeDir()
 		dir = filepath.Join(home, "Library", "Application Support", "Windeck")
 	}
+	if devShow() != "" {
+		dir = filepath.Join(os.TempDir(), "windeck-dev")
+	}
 	a := &App{
 		dir:   dir,
 		pool:  snapshot.New(snapshot.DefaultBudget),
 		deck:  deck.New(),
 		icons: iconCache{byPath: map[string]*ui.Bitmap{}, loading: map[string]bool{}},
-		shots: previewCache{byID: map[wm.WindowID]*preview{}, capturing: map[wm.WindowID]bool{}},
+		shots: previewCache{byID: map[wm.WindowID]*preview{}, capturing: map[wm.WindowID]bool{}, failed: map[wm.WindowID]bool{}},
 	}
 	a.ses.collapsed = map[string]bool{}
 	a.set = settings.Load(a.path("settings.json"))
@@ -139,12 +145,19 @@ func (a *App) start() {
 	a.deck.SeedHistory(wm.StackingOrder())
 	a.ses.focused = wm.FocusedWindow()
 	a.deck.Focus(a.ses.focused)
-	a.startTap()
 	a.refreshNow()
-	if !a.set.Onboarded || !a.trusted {
-		a.openOnboarding()
+	if dev := devShow(); dev != "" {
+		a.showForDev(dev)
+	} else {
+		a.startTap()
+		if !a.set.Onboarded || !a.trusted {
+			a.openOnboarding()
+		}
 	}
 	go a.validateLicense()
+	if devShow() == "" {
+		a.startUpdates()
+	}
 	// Learned data is written now and then, not on every switch.
 	go func() {
 		for range time.Tick(5 * time.Minute) {
@@ -194,6 +207,7 @@ func (a *App) saveSettings() {
 	mygo.App.SetLocale(a.set.Language)
 	mygo.App.SetOpenAtLogin(a.set.OpenAtLogin)
 	a.startTap()
+	a.scheduleUpdateCheck()
 	a.redraw()
 }
 
@@ -345,4 +359,31 @@ func (a *App) resetLearned() {
 	a.pool.Clear()
 	a.shots.clear()
 	a.redraw()
+}
+
+// devShow is WINDECK_DEV_SHOW: panel, settings or onboarding, to show
+// that window at launch and look at it, without the shortcut taking the
+// keyboard and with the data in a folder of its own.
+func devShow() string { return os.Getenv("WINDECK_DEV_SHOW") }
+
+func (a *App) showForDev(what string) {
+	switch what {
+	case "panel", "search":
+		// Once the windows are listed.
+		time.AfterFunc(time.Second, func() {
+			a.update(func() {
+				if what == "search" {
+					a.openSearch()
+					return
+				}
+				if a.open(false) {
+					a.do(a.sw.Timer(true))
+				}
+			})
+		})
+	case "settings":
+		a.openSettings()
+	default:
+		a.openOnboarding()
+	}
 }

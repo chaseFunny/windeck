@@ -1,9 +1,10 @@
 import { For, Show, createSignal, onCleanup, onMount } from 'solid-js';
 import type { Content } from '../lib/content';
+import Icon, { icons } from './Icon';
 
 // A live model of the switcher: the grouped tabs at the left, the large
 // preview in the middle, the highlight walking the cycle as Tab would.
-// The apps are made up, drawn in CSS.
+// The apps are made up, drawn in CSS, in flat colors of the design.
 
 type Kind = 'editor' | 'terminal' | 'browser' | 'doc' | 'design';
 
@@ -24,25 +25,25 @@ interface Group {
 const groups: Group[] = [
   {
     app: 'Code Editor',
-    color: 'linear-gradient(160deg,#4aa3ff,#1e6fe8)',
+    color: '#5A4BC6',
     letter: '{ }',
     windows: [
       { id: 1, title: 'server.ts — api', kind: 'editor' },
       { id: 2, title: 'App.tsx — web', kind: 'editor' },
     ],
   },
-  { app: 'Terminal', color: 'linear-gradient(160deg,#4a4a52,#1c1c20)', letter: '>_', windows: [{ id: 3, title: 'zsh — ~/projects/api', kind: 'terminal' }] },
+  { app: 'Terminal', color: '#1C1C23', letter: '>_', windows: [{ id: 3, title: 'zsh — ~/projects/api', kind: 'terminal' }] },
   {
     app: 'Browser',
-    color: 'linear-gradient(160deg,#5ad0ff,#2a7bff)',
+    color: '#2E9E6A',
     letter: '◎',
     windows: [
       { id: 4, title: 'localhost:5173 — Dashboard', kind: 'browser' },
       { id: 5, title: 'net/http — Go Packages', kind: 'browser' },
     ],
   },
-  { app: 'Notes', color: 'linear-gradient(160deg,#ffd76a,#f5a524)', letter: '✎', windows: [{ id: 6, title: 'Q3 Roadmap', kind: 'doc', badge: 'minimized' }] },
-  { app: 'Design', color: 'linear-gradient(160deg,#c084fc,#7c3aed)', letter: '◆', windows: [{ id: 7, title: 'Landing page — v4', kind: 'design', badge: 'desktop' }] },
+  { app: 'Notes', color: '#E07A2F', letter: '✎', windows: [{ id: 6, title: 'Q3 Roadmap', kind: 'doc', badge: 'minimized' }] },
+  { app: 'Design', color: '#7C7C8C', letter: '◆', windows: [{ id: 7, title: 'Landing page — v4', kind: 'design', badge: 'desktop' }] },
 ];
 
 // Tab's order: the previous window, the predicted one, then recency.
@@ -141,10 +142,7 @@ export default function SwitcherDemo(props: { t: Content }) {
       <div class="demo__panel" role="img" aria-label="Windeck switcher">
         <aside class="demo__side">
           <div class="demo__search">
-            <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5">
-              <circle cx="7" cy="7" r="4.5" />
-              <path d="M10.4 10.4 14 14" />
-            </svg>
+            <Icon d={icons.search} size={16} />
             <span>{t().search}</span>
             <kbd>{t().space}</kbd>
           </div>
@@ -154,10 +152,10 @@ export default function SwitcherDemo(props: { t: Content }) {
                 <>
                   <Show when={g.windows.length > 1}>
                     <div class="demo__group">
-                      <span class="demo__chev">⌄</span>
-                      <AppIcon group={g} size={16} />
+                      <AppIcon group={g} size={18} />
                       <span>{g.app}</span>
                       <em>{g.windows.length}</em>
+                      <Icon d={icons.chevronDown} size={14} />
                     </div>
                   </Show>
                   <For each={g.windows}>
@@ -167,7 +165,9 @@ export default function SwitcherDemo(props: { t: Content }) {
                         classList={{ 'is-sel': sel() === w.id, 'is-child': g.windows.length > 1 }}
                         onMouseEnter={() => setSel(w.id)}
                       >
-                        {g.windows.length > 1 ? <span class="demo__guide" /> : <AppIcon group={g} />}
+                        <Show when={g.windows.length === 1}>
+                          <AppIcon group={g} size={18} />
+                        </Show>
                         <span class="demo__title">
                           {w.title}
                           <Show when={g.windows.length === 1}>
@@ -178,7 +178,9 @@ export default function SwitcherDemo(props: { t: Content }) {
                           <span class="demo__badge">{w.badge === 'minimized' ? t().minimized : t().desktop}</span>
                         </Show>
                         <Show when={w.id === predicted}>
-                          <span class="demo__star" title={t().predicted}>★</span>
+                          <span class="demo__star" title={t().predicted}>
+                            <Icon d={icons.star} size={12} fill />
+                          </span>
                         </Show>
                         <Show when={ordinal(w.id)}>
                           <span class="demo__ord">{ordinal(w.id)}</span>
@@ -192,14 +194,13 @@ export default function SwitcherDemo(props: { t: Content }) {
           </div>
           <div class="demo__hints">
             <span><kbd>⇥</kbd>{t().hints[0]}</span>
-            <span><kbd>↑↓</kbd>{t().hints[1]}</span>
-            <span><kbd>W</kbd>{t().hints[2]}</span>
-            <span><kbd>␣</kbd>{t().hints[3]}</span>
+            <span><kbd>W</kbd>{t().hints[1]}</span>
+            <span><kbd>M</kbd>{t().hints[2]}</span>
           </div>
         </aside>
         <section class="demo__stage">
           <header class="demo__head">
-            <AppIcon group={current().group} size={30} />
+            <AppIcon group={current().group} size={32} />
             <div>
               <strong>{current().title}</strong>
               <small>{current().group.app}</small>

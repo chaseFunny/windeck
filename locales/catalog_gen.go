@@ -65,13 +65,13 @@ func (msgs Messages) AboutVersion(version string) string {
 // AboutWebsite says "Website"
 // in the language the app shows.
 //
-// A button opening windeck.app.
+// A button opening the website.
 func AboutWebsite() string { return In(i18n.Locale()).AboutWebsite() }
 
 // AboutWebsite says "Website"
 // in the language of msgs.
 //
-// A button opening windeck.app.
+// A button opening the website.
 func (msgs Messages) AboutWebsite() string {
 	return Catalog.Format(msgs.locale, "aboutWebsite", nil)
 }
@@ -130,20 +130,6 @@ func BadgeDesktop(n int) string { return In(i18n.Locale()).BadgeDesktop(n) }
 // A window's Space, in the preview's header.
 func (msgs Messages) BadgeDesktop(n int) string {
 	return Catalog.Format(msgs.locale, "badgeDesktop", map[string]any{"n": n})
-}
-
-// BadgeDesktopShort says "D{n}"
-// in the language the app shows.
-//
-// A window's Space, compact in the list.
-func BadgeDesktopShort(n int) string { return In(i18n.Locale()).BadgeDesktopShort(n) }
-
-// BadgeDesktopShort says "D{n}"
-// in the language of msgs.
-//
-// A window's Space, compact in the list.
-func (msgs Messages) BadgeDesktopShort(n int) string {
-	return Catalog.Format(msgs.locale, "badgeDesktopShort", map[string]any{"n": n})
 }
 
 // BadgeDisplay says "External display"
@@ -226,6 +212,20 @@ func (msgs Messages) CommonCancel() string {
 	return Catalog.Format(msgs.locale, "commonCancel", nil)
 }
 
+// CommonOK says "OK"
+// in the language the app shows.
+//
+// A button closing a message.
+func CommonOK() string { return In(i18n.Locale()).CommonOK() }
+
+// CommonOK says "OK"
+// in the language of msgs.
+//
+// A button closing a message.
+func (msgs Messages) CommonOK() string {
+	return Catalog.Format(msgs.locale, "commonOK", nil)
+}
+
 // HintClear says "Clear"
 // in the language the app shows.
 //
@@ -296,13 +296,13 @@ func (msgs Messages) HintNext() string {
 	return Catalog.Format(msgs.locale, "hintNext", nil)
 }
 
-// HintQuit says "Quit app"
+// HintQuit says "Quit"
 // in the language the app shows.
 //
 // The key hint of Q.
 func HintQuit() string { return In(i18n.Locale()).HintQuit() }
 
-// HintQuit says "Quit app"
+// HintQuit says "Quit"
 // in the language of msgs.
 //
 // The key hint of Q.
@@ -352,6 +352,62 @@ func (msgs Messages) LanguageSystem() string {
 	return Catalog.Format(msgs.locale, "languageSystem", nil)
 }
 
+// LayoutList says "List"
+// in the language the app shows.
+//
+// The panel layout setting.
+func LayoutList() string { return In(i18n.Locale()).LayoutList() }
+
+// LayoutList says "List"
+// in the language of msgs.
+//
+// The panel layout setting.
+func (msgs Messages) LayoutList() string {
+	return Catalog.Format(msgs.locale, "layoutList", nil)
+}
+
+// LayoutListDetail says "Icons and titles alone, the most recent first: compact and quick."
+// in the language the app shows.
+//
+// The panel layout setting.
+func LayoutListDetail() string { return In(i18n.Locale()).LayoutListDetail() }
+
+// LayoutListDetail says "Icons and titles alone, the most recent first: compact and quick."
+// in the language of msgs.
+//
+// The panel layout setting.
+func (msgs Messages) LayoutListDetail() string {
+	return Catalog.Format(msgs.locale, "layoutListDetail", nil)
+}
+
+// LayoutTabs says "Tabs and preview"
+// in the language the app shows.
+//
+// The panel layout setting.
+func LayoutTabs() string { return In(i18n.Locale()).LayoutTabs() }
+
+// LayoutTabs says "Tabs and preview"
+// in the language of msgs.
+//
+// The panel layout setting.
+func (msgs Messages) LayoutTabs() string {
+	return Catalog.Format(msgs.locale, "layoutTabs", nil)
+}
+
+// LayoutTabsDetail says "Windows as tabs grouped by app, with a large preview to be sure."
+// in the language the app shows.
+//
+// The panel layout setting.
+func LayoutTabsDetail() string { return In(i18n.Locale()).LayoutTabsDetail() }
+
+// LayoutTabsDetail says "Windows as tabs grouped by app, with a large preview to be sure."
+// in the language of msgs.
+//
+// The panel layout setting.
+func (msgs Messages) LayoutTabsDetail() string {
+	return Catalog.Format(msgs.locale, "layoutTabsDetail", nil)
+}
+
 // LicenseActivate says "Activate"
 // in the language the app shows.
 func LicenseActivate() string { return In(i18n.Locale()).LicenseActivate() }
@@ -396,16 +452,6 @@ func (msgs Messages) LicenseDeactivate() string {
 	return Catalog.Format(msgs.locale, "licenseDeactivate", nil)
 }
 
-// LicenseDeactivated says "This Mac is deactivated: the key can serve another one."
-// in the language the app shows.
-func LicenseDeactivated() string { return In(i18n.Locale()).LicenseDeactivated() }
-
-// LicenseDeactivated says "This Mac is deactivated: the key can serve another one."
-// in the language of msgs.
-func (msgs Messages) LicenseDeactivated() string {
-	return Catalog.Format(msgs.locale, "licenseDeactivated", nil)
-}
-
 // LicenseDeactivateDetail says "Frees one of the license's three Macs."
 // in the language the app shows.
 func LicenseDeactivateDetail() string { return In(i18n.Locale()).LicenseDeactivateDetail() }
@@ -414,6 +460,16 @@ func LicenseDeactivateDetail() string { return In(i18n.Locale()).LicenseDeactiva
 // in the language of msgs.
 func (msgs Messages) LicenseDeactivateDetail() string {
 	return Catalog.Format(msgs.locale, "licenseDeactivateDetail", nil)
+}
+
+// LicenseDeactivated says "This Mac is deactivated: the key can serve another one."
+// in the language the app shows.
+func LicenseDeactivated() string { return In(i18n.Locale()).LicenseDeactivated() }
+
+// LicenseDeactivated says "This Mac is deactivated: the key can serve another one."
+// in the language of msgs.
+func (msgs Messages) LicenseDeactivated() string {
+	return Catalog.Format(msgs.locale, "licenseDeactivated", nil)
 }
 
 // LicenseEnter says "License key"
@@ -576,6 +632,20 @@ func (msgs Messages) OnboardShortcutNote() string {
 	return Catalog.Format(msgs.locale, "onboardShortcutNote", nil)
 }
 
+// OnboardStep says "Step {n} of {total}"
+// in the language the app shows.
+//
+// The onboarding steps, as 1 of 2.
+func OnboardStep(n int, total int) string { return In(i18n.Locale()).OnboardStep(n, total) }
+
+// OnboardStep says "Step {n} of {total}"
+// in the language of msgs.
+//
+// The onboarding steps, as 1 of 2.
+func (msgs Messages) OnboardStep(n int, total int) string {
+	return Catalog.Format(msgs.locale, "onboardStep", map[string]any{"n": n, "total": total})
+}
+
 // OnboardTitle says "Welcome to Windeck"
 // in the language the app shows.
 //
@@ -648,6 +718,20 @@ func PagePrivacy() string { return In(i18n.Locale()).PagePrivacy() }
 // in the language of msgs.
 func (msgs Messages) PagePrivacy() string {
 	return Catalog.Format(msgs.locale, "pagePrivacy", nil)
+}
+
+// PageShortcuts says "Shortcuts"
+// in the language the app shows.
+//
+// A page of Settings.
+func PageShortcuts() string { return In(i18n.Locale()).PageShortcuts() }
+
+// PageShortcuts says "Shortcuts"
+// in the language of msgs.
+//
+// A page of Settings.
+func (msgs Messages) PageShortcuts() string {
+	return Catalog.Format(msgs.locale, "pageShortcuts", nil)
 }
 
 // PageSmart says "Smart"
@@ -870,11 +954,11 @@ func (msgs Messages) PreviewOff() string {
 	return Catalog.Format(msgs.locale, "previewOff", nil)
 }
 
-// PrivacyAdd says "Add an app"
+// PrivacyAdd says "Add App…"
 // in the language the app shows.
 func PrivacyAdd() string { return In(i18n.Locale()).PrivacyAdd() }
 
-// PrivacyAdd says "Add an app"
+// PrivacyAdd says "Add App…"
 // in the language of msgs.
 func (msgs Messages) PrivacyAdd() string {
 	return Catalog.Format(msgs.locale, "privacyAdd", nil)
@@ -900,6 +984,20 @@ func (msgs Messages) PrivacyDataFolder() string {
 	return Catalog.Format(msgs.locale, "privacyDataFolder", nil)
 }
 
+// PrivacyEmpty says "No apps. Windeck captures every window."
+// in the language the app shows.
+//
+// The privacy list, empty.
+func PrivacyEmpty() string { return In(i18n.Locale()).PrivacyEmpty() }
+
+// PrivacyEmpty says "No apps. Windeck captures every window."
+// in the language of msgs.
+//
+// The privacy list, empty.
+func (msgs Messages) PrivacyEmpty() string {
+	return Catalog.Format(msgs.locale, "privacyEmpty", nil)
+}
+
 // PrivacyExcluded says "Privacy list"
 // in the language the app shows.
 func PrivacyExcluded() string { return In(i18n.Locale()).PrivacyExcluded() }
@@ -918,6 +1016,34 @@ func PrivacyExcludedDetail() string { return In(i18n.Locale()).PrivacyExcludedDe
 // in the language of msgs.
 func (msgs Messages) PrivacyExcludedDetail() string {
 	return Catalog.Format(msgs.locale, "privacyExcludedDetail", nil)
+}
+
+// PrivacyNotInstalled says "Not installed"
+// in the language the app shows.
+//
+// A privacy list app that is not on this Mac.
+func PrivacyNotInstalled() string { return In(i18n.Locale()).PrivacyNotInstalled() }
+
+// PrivacyNotInstalled says "Not installed"
+// in the language of msgs.
+//
+// A privacy list app that is not on this Mac.
+func (msgs Messages) PrivacyNotInstalled() string {
+	return Catalog.Format(msgs.locale, "privacyNotInstalled", nil)
+}
+
+// PrivacyNotInstalledMore says "{n, plural, one {# more app, not installed on this Mac} other {# more apps, not installed on this Mac}}"
+// in the language the app shows.
+//
+// The privacy list: the folded row of apps not installed.
+func PrivacyNotInstalledMore(n int) string { return In(i18n.Locale()).PrivacyNotInstalledMore(n) }
+
+// PrivacyNotInstalledMore says "{n, plural, one {# more app, not installed on this Mac} other {# more apps, not installed on this Mac}}"
+// in the language of msgs.
+//
+// The privacy list: the folded row of apps not installed.
+func (msgs Messages) PrivacyNotInstalledMore(n int) string {
+	return Catalog.Format(msgs.locale, "privacyNotInstalledMore", map[string]any{"n": n})
 }
 
 // PrivacyPermissions says "Permissions"
@@ -1020,6 +1146,34 @@ func (msgs Messages) RowMinimize() string {
 	return Catalog.Format(msgs.locale, "rowMinimize", nil)
 }
 
+// SearchNoResults says "No windows match “{query}”"
+// in the language the app shows.
+//
+// The list, when the search finds nothing.
+func SearchNoResults(query string) string { return In(i18n.Locale()).SearchNoResults(query) }
+
+// SearchNoResults says "No windows match “{query}”"
+// in the language of msgs.
+//
+// The list, when the search finds nothing.
+func (msgs Messages) SearchNoResults(query string) string {
+	return Catalog.Format(msgs.locale, "searchNoResults", map[string]any{"query": query})
+}
+
+// SearchNoResultsHint says "Try fewer letters, or part of the app’s name."
+// in the language the app shows.
+//
+// Under searchNoResults.
+func SearchNoResultsHint() string { return In(i18n.Locale()).SearchNoResultsHint() }
+
+// SearchNoResultsHint says "Try fewer letters, or part of the app’s name."
+// in the language of msgs.
+//
+// Under searchNoResults.
+func (msgs Messages) SearchNoResultsHint() string {
+	return Catalog.Format(msgs.locale, "searchNoResultsHint", nil)
+}
+
 // SearchPlaceholder says "Search windows"
 // in the language the app shows.
 func SearchPlaceholder() string { return In(i18n.Locale()).SearchPlaceholder() }
@@ -1058,6 +1212,20 @@ func SettingsLanguage() string { return In(i18n.Locale()).SettingsLanguage() }
 // in the language of msgs.
 func (msgs Messages) SettingsLanguage() string {
 	return Catalog.Format(msgs.locale, "settingsLanguage", nil)
+}
+
+// SettingsLayout says "Layout"
+// in the language the app shows.
+//
+// The panel layout setting.
+func SettingsLayout() string { return In(i18n.Locale()).SettingsLayout() }
+
+// SettingsLayout says "Layout"
+// in the language of msgs.
+//
+// The panel layout setting.
+func (msgs Messages) SettingsLayout() string {
+	return Catalog.Format(msgs.locale, "settingsLayout", nil)
 }
 
 // SettingsLook says "Look"
@@ -1164,6 +1332,20 @@ func (msgs Messages) SettingsTitle() string {
 	return Catalog.Format(msgs.locale, "settingsTitle", nil)
 }
 
+// SettingsUpdates says "Updates"
+// in the language the app shows.
+//
+// A section of the About page.
+func SettingsUpdates() string { return In(i18n.Locale()).SettingsUpdates() }
+
+// SettingsUpdates says "Updates"
+// in the language of msgs.
+//
+// A section of the About page.
+func (msgs Messages) SettingsUpdates() string {
+	return Catalog.Format(msgs.locale, "settingsUpdates", nil)
+}
+
 // SettingsWindowless says "Show apps without windows"
 // in the language the app shows.
 func SettingsWindowless() string { return In(i18n.Locale()).SettingsWindowless() }
@@ -1232,6 +1414,258 @@ func ShortcutRecommended() string { return In(i18n.Locale()).ShortcutRecommended
 // in the language of msgs.
 func (msgs Messages) ShortcutRecommended() string {
 	return Catalog.Format(msgs.locale, "shortcutRecommended", nil)
+}
+
+// ShortcutsActionKeys says "Act on windows with keys"
+// in the language the app shows.
+//
+// A setting: W, M and Q act on the highlighted window.
+func ShortcutsActionKeys() string { return In(i18n.Locale()).ShortcutsActionKeys() }
+
+// ShortcutsActionKeys says "Act on windows with keys"
+// in the language of msgs.
+//
+// A setting: W, M and Q act on the highlighted window.
+func (msgs Messages) ShortcutsActionKeys() string {
+	return Catalog.Format(msgs.locale, "shortcutsActionKeys", nil)
+}
+
+// ShortcutsActionKeysDetail says "Off, W, M and Q do nothing in the switcher."
+// in the language the app shows.
+//
+// The setting's description.
+func ShortcutsActionKeysDetail() string { return In(i18n.Locale()).ShortcutsActionKeysDetail() }
+
+// ShortcutsActionKeysDetail says "Off, W, M and Q do nothing in the switcher."
+// in the language of msgs.
+//
+// The setting's description.
+func (msgs Messages) ShortcutsActionKeysDetail() string {
+	return Catalog.Format(msgs.locale, "shortcutsActionKeysDetail", nil)
+}
+
+// ShortcutsActions says "Window actions"
+// in the language the app shows.
+//
+// A heading of the Shortcuts page.
+func ShortcutsActions() string { return In(i18n.Locale()).ShortcutsActions() }
+
+// ShortcutsActions says "Window actions"
+// in the language of msgs.
+//
+// A heading of the Shortcuts page.
+func (msgs Messages) ShortcutsActions() string {
+	return Catalog.Format(msgs.locale, "shortcutsActions", nil)
+}
+
+// ShortcutsCancel says "Cancel"
+// in the language the app shows.
+//
+// What Escape does.
+func ShortcutsCancel() string { return In(i18n.Locale()).ShortcutsCancel() }
+
+// ShortcutsCancel says "Cancel"
+// in the language of msgs.
+//
+// What Escape does.
+func (msgs Messages) ShortcutsCancel() string {
+	return Catalog.Format(msgs.locale, "shortcutsCancel", nil)
+}
+
+// ShortcutsClose says "Close the window"
+// in the language the app shows.
+//
+// What W does.
+func ShortcutsClose() string { return In(i18n.Locale()).ShortcutsClose() }
+
+// ShortcutsClose says "Close the window"
+// in the language of msgs.
+//
+// What W does.
+func (msgs Messages) ShortcutsClose() string {
+	return Catalog.Format(msgs.locale, "shortcutsClose", nil)
+}
+
+// ShortcutsInSwitcher says "In the switcher"
+// in the language the app shows.
+//
+// A heading of the Shortcuts page: the keys while the switcher shows.
+func ShortcutsInSwitcher() string { return In(i18n.Locale()).ShortcutsInSwitcher() }
+
+// ShortcutsInSwitcher says "In the switcher"
+// in the language of msgs.
+//
+// A heading of the Shortcuts page: the keys while the switcher shows.
+func (msgs Messages) ShortcutsInSwitcher() string {
+	return Catalog.Format(msgs.locale, "shortcutsInSwitcher", nil)
+}
+
+// ShortcutsJump says "Previous or next app"
+// in the language the app shows.
+//
+// What the left and right arrows do.
+func ShortcutsJump() string { return In(i18n.Locale()).ShortcutsJump() }
+
+// ShortcutsJump says "Previous or next app"
+// in the language of msgs.
+//
+// What the left and right arrows do.
+func (msgs Messages) ShortcutsJump() string {
+	return Catalog.Format(msgs.locale, "shortcutsJump", nil)
+}
+
+// ShortcutsMinimize says "Minimize the window"
+// in the language the app shows.
+//
+// What M does.
+func ShortcutsMinimize() string { return In(i18n.Locale()).ShortcutsMinimize() }
+
+// ShortcutsMinimize says "Minimize the window"
+// in the language of msgs.
+//
+// What M does.
+func (msgs Messages) ShortcutsMinimize() string {
+	return Catalog.Format(msgs.locale, "shortcutsMinimize", nil)
+}
+
+// ShortcutsMove says "Move up and down the list"
+// in the language the app shows.
+//
+// What the up and down arrows do.
+func ShortcutsMove() string { return In(i18n.Locale()).ShortcutsMove() }
+
+// ShortcutsMove says "Move up and down the list"
+// in the language of msgs.
+//
+// What the up and down arrows do.
+func (msgs Messages) ShortcutsMove() string {
+	return Catalog.Format(msgs.locale, "shortcutsMove", nil)
+}
+
+// ShortcutsNext says "Next window"
+// in the language the app shows.
+//
+// What Tab does in the switcher.
+func ShortcutsNext() string { return In(i18n.Locale()).ShortcutsNext() }
+
+// ShortcutsNext says "Next window"
+// in the language of msgs.
+//
+// What Tab does in the switcher.
+func (msgs Messages) ShortcutsNext() string {
+	return Catalog.Format(msgs.locale, "shortcutsNext", nil)
+}
+
+// ShortcutsOpen says "Open the switcher"
+// in the language the app shows.
+//
+// A heading of the Shortcuts page.
+func ShortcutsOpen() string { return In(i18n.Locale()).ShortcutsOpen() }
+
+// ShortcutsOpen says "Open the switcher"
+// in the language of msgs.
+//
+// A heading of the Shortcuts page.
+func (msgs Messages) ShortcutsOpen() string {
+	return Catalog.Format(msgs.locale, "shortcutsOpen", nil)
+}
+
+// ShortcutsOr says "or"
+// in the language the app shows.
+//
+// Between two keys that do the same.
+func ShortcutsOr() string { return In(i18n.Locale()).ShortcutsOr() }
+
+// ShortcutsOr says "or"
+// in the language of msgs.
+//
+// Between two keys that do the same.
+func (msgs Messages) ShortcutsOr() string {
+	return Catalog.Format(msgs.locale, "shortcutsOr", nil)
+}
+
+// ShortcutsPrevious says "Previous window"
+// in the language the app shows.
+//
+// What Shift-Tab does in the switcher.
+func ShortcutsPrevious() string { return In(i18n.Locale()).ShortcutsPrevious() }
+
+// ShortcutsPrevious says "Previous window"
+// in the language of msgs.
+//
+// What Shift-Tab does in the switcher.
+func (msgs Messages) ShortcutsPrevious() string {
+	return Catalog.Format(msgs.locale, "shortcutsPrevious", nil)
+}
+
+// ShortcutsQuit says "Quit its app"
+// in the language the app shows.
+//
+// What Q does.
+func ShortcutsQuit() string { return In(i18n.Locale()).ShortcutsQuit() }
+
+// ShortcutsQuit says "Quit its app"
+// in the language of msgs.
+//
+// What Q does.
+func (msgs Messages) ShortcutsQuit() string {
+	return Catalog.Format(msgs.locale, "shortcutsQuit", nil)
+}
+
+// ShortcutsRelease says "Release {key}"
+// in the language the app shows.
+//
+// A key hint: releasing the shortcut's modifier.
+func ShortcutsRelease(key string) string { return In(i18n.Locale()).ShortcutsRelease(key) }
+
+// ShortcutsRelease says "Release {key}"
+// in the language of msgs.
+//
+// A key hint: releasing the shortcut's modifier.
+func (msgs Messages) ShortcutsRelease(key string) string {
+	return Catalog.Format(msgs.locale, "shortcutsRelease", map[string]any{"key": key})
+}
+
+// ShortcutsSearch says "Search"
+// in the language the app shows.
+//
+// What Space or slash does.
+func ShortcutsSearch() string { return In(i18n.Locale()).ShortcutsSearch() }
+
+// ShortcutsSearch says "Search"
+// in the language of msgs.
+//
+// What Space or slash does.
+func (msgs Messages) ShortcutsSearch() string {
+	return Catalog.Format(msgs.locale, "shortcutsSearch", nil)
+}
+
+// ShortcutsSearchNote says "While searching, ↑ ↓ move, Return switches and Esc clears the query."
+// in the language the app shows.
+//
+// The footnote of the keys.
+func ShortcutsSearchNote() string { return In(i18n.Locale()).ShortcutsSearchNote() }
+
+// ShortcutsSearchNote says "While searching, ↑ ↓ move, Return switches and Esc clears the query."
+// in the language of msgs.
+//
+// The footnote of the keys.
+func (msgs Messages) ShortcutsSearchNote() string {
+	return Catalog.Format(msgs.locale, "shortcutsSearchNote", nil)
+}
+
+// ShortcutsSwitch says "Switch to the highlighted window"
+// in the language the app shows.
+//
+// What releasing the modifier, or Return, does.
+func ShortcutsSwitch() string { return In(i18n.Locale()).ShortcutsSwitch() }
+
+// ShortcutsSwitch says "Switch to the highlighted window"
+// in the language of msgs.
+//
+// What releasing the modifier, or Return, does.
+func (msgs Messages) ShortcutsSwitch() string {
+	return Catalog.Format(msgs.locale, "shortcutsSwitch", nil)
 }
 
 // SmartLocalNote says "Learned on this Mac only, from the windows you switch to."
@@ -1334,14 +1768,32 @@ func (msgs Messages) StatTopTwo() string {
 	return Catalog.Format(msgs.locale, "statTopTwo", nil)
 }
 
-// TraySearch says "Search Windows ({shortcut}, Space)"
+// TrayCheckUpdates says "Check for Updates…"
 // in the language the app shows.
-func TraySearch(shortcut string) string { return In(i18n.Locale()).TraySearch(shortcut) }
+//
+// A menu bar item.
+func TrayCheckUpdates() string { return In(i18n.Locale()).TrayCheckUpdates() }
 
-// TraySearch says "Search Windows ({shortcut}, Space)"
+// TrayCheckUpdates says "Check for Updates…"
 // in the language of msgs.
-func (msgs Messages) TraySearch(shortcut string) string {
-	return Catalog.Format(msgs.locale, "traySearch", map[string]any{"shortcut": shortcut})
+//
+// A menu bar item.
+func (msgs Messages) TrayCheckUpdates() string {
+	return Catalog.Format(msgs.locale, "trayCheckUpdates", nil)
+}
+
+// TrayLayout says "Layout"
+// in the language the app shows.
+//
+// The panel layout setting.
+func TrayLayout() string { return In(i18n.Locale()).TrayLayout() }
+
+// TrayLayout says "Layout"
+// in the language of msgs.
+//
+// The panel layout setting.
+func (msgs Messages) TrayLayout() string {
+	return Catalog.Format(msgs.locale, "trayLayout", nil)
 }
 
 // TrayPermissions says "Permissions & Shortcut…"
@@ -1364,6 +1816,30 @@ func (msgs Messages) TrayQuit() string {
 	return Catalog.Format(msgs.locale, "trayQuit", nil)
 }
 
+// TrayRestartUpdate says "Restart to Update to {version}"
+// in the language the app shows.
+//
+// A menu bar item, once an update was installed in the background.
+func TrayRestartUpdate(version string) string { return In(i18n.Locale()).TrayRestartUpdate(version) }
+
+// TrayRestartUpdate says "Restart to Update to {version}"
+// in the language of msgs.
+//
+// A menu bar item, once an update was installed in the background.
+func (msgs Messages) TrayRestartUpdate(version string) string {
+	return Catalog.Format(msgs.locale, "trayRestartUpdate", map[string]any{"version": version})
+}
+
+// TraySearch says "Search Windows ({shortcut}, Space)"
+// in the language the app shows.
+func TraySearch(shortcut string) string { return In(i18n.Locale()).TraySearch(shortcut) }
+
+// TraySearch says "Search Windows ({shortcut}, Space)"
+// in the language of msgs.
+func (msgs Messages) TraySearch(shortcut string) string {
+	return Catalog.Format(msgs.locale, "traySearch", map[string]any{"shortcut": shortcut})
+}
+
 // TraySettings says "Settings…"
 // in the language the app shows.
 func TraySettings() string { return In(i18n.Locale()).TraySettings() }
@@ -1372,4 +1848,372 @@ func TraySettings() string { return In(i18n.Locale()).TraySettings() }
 // in the language of msgs.
 func (msgs Messages) TraySettings() string {
 	return Catalog.Format(msgs.locale, "traySettings", nil)
+}
+
+// UpdatesAuto says "Check for updates automatically"
+// in the language the app shows.
+//
+// A setting.
+func UpdatesAuto() string { return In(i18n.Locale()).UpdatesAuto() }
+
+// UpdatesAuto says "Check for updates automatically"
+// in the language of msgs.
+//
+// A setting.
+func (msgs Messages) UpdatesAuto() string {
+	return Catalog.Format(msgs.locale, "updatesAuto", nil)
+}
+
+// UpdatesAutoDetail says "Once a day, in the background."
+// in the language the app shows.
+//
+// The setting's description.
+func UpdatesAutoDetail() string { return In(i18n.Locale()).UpdatesAutoDetail() }
+
+// UpdatesAutoDetail says "Once a day, in the background."
+// in the language of msgs.
+//
+// The setting's description.
+func (msgs Messages) UpdatesAutoDetail() string {
+	return Catalog.Format(msgs.locale, "updatesAutoDetail", nil)
+}
+
+// UpdatesAvailable says "Windeck {version} is available"
+// in the language the app shows.
+//
+// The update window's title line.
+func UpdatesAvailable(version string) string { return In(i18n.Locale()).UpdatesAvailable(version) }
+
+// UpdatesAvailable says "Windeck {version} is available"
+// in the language of msgs.
+//
+// The update window's title line.
+func (msgs Messages) UpdatesAvailable(version string) string {
+	return Catalog.Format(msgs.locale, "updatesAvailable", map[string]any{"version": version})
+}
+
+// UpdatesAvailableDetail says "You have {current}."
+// in the language the app shows.
+//
+// Under the title line.
+func UpdatesAvailableDetail(current string) string {
+	return In(i18n.Locale()).UpdatesAvailableDetail(current)
+}
+
+// UpdatesAvailableDetail says "You have {current}."
+// in the language of msgs.
+//
+// Under the title line.
+func (msgs Messages) UpdatesAvailableDetail(current string) string {
+	return Catalog.Format(msgs.locale, "updatesAvailableDetail", map[string]any{"current": current})
+}
+
+// UpdatesCheckNow says "Check Now"
+// in the language the app shows.
+//
+// A button.
+func UpdatesCheckNow() string { return In(i18n.Locale()).UpdatesCheckNow() }
+
+// UpdatesCheckNow says "Check Now"
+// in the language of msgs.
+//
+// A button.
+func (msgs Messages) UpdatesCheckNow() string {
+	return Catalog.Format(msgs.locale, "updatesCheckNow", nil)
+}
+
+// UpdatesChecking says "Checking for updates…"
+// in the language the app shows.
+//
+// The update window.
+func UpdatesChecking() string { return In(i18n.Locale()).UpdatesChecking() }
+
+// UpdatesChecking says "Checking for updates…"
+// in the language of msgs.
+//
+// The update window.
+func (msgs Messages) UpdatesChecking() string {
+	return Catalog.Format(msgs.locale, "updatesChecking", nil)
+}
+
+// UpdatesDisabled says "This copy can't update itself. Download new versions from the website."
+// in the language the app shows.
+//
+// Development builds, or an app where it cannot write.
+func UpdatesDisabled() string { return In(i18n.Locale()).UpdatesDisabled() }
+
+// UpdatesDisabled says "This copy can't update itself. Download new versions from the website."
+// in the language of msgs.
+//
+// Development builds, or an app where it cannot write.
+func (msgs Messages) UpdatesDisabled() string {
+	return Catalog.Format(msgs.locale, "updatesDisabled", nil)
+}
+
+// UpdatesDownloading says "Downloading Windeck {version}…"
+// in the language the app shows.
+//
+// The update window.
+func UpdatesDownloading(version string) string { return In(i18n.Locale()).UpdatesDownloading(version) }
+
+// UpdatesDownloading says "Downloading Windeck {version}…"
+// in the language of msgs.
+//
+// The update window.
+func (msgs Messages) UpdatesDownloading(version string) string {
+	return Catalog.Format(msgs.locale, "updatesDownloading", map[string]any{"version": version})
+}
+
+// UpdatesFailed says "Couldn't check for updates"
+// in the language the app shows.
+//
+// The update window.
+func UpdatesFailed() string { return In(i18n.Locale()).UpdatesFailed() }
+
+// UpdatesFailed says "Couldn't check for updates"
+// in the language of msgs.
+//
+// The update window.
+func (msgs Messages) UpdatesFailed() string {
+	return Catalog.Format(msgs.locale, "updatesFailed", nil)
+}
+
+// UpdatesFailedDetail says "Check your connection and try again."
+// in the language the app shows.
+//
+// The update window.
+func UpdatesFailedDetail() string { return In(i18n.Locale()).UpdatesFailedDetail() }
+
+// UpdatesFailedDetail says "Check your connection and try again."
+// in the language of msgs.
+//
+// The update window.
+func (msgs Messages) UpdatesFailedDetail() string {
+	return Catalog.Format(msgs.locale, "updatesFailedDetail", nil)
+}
+
+// UpdatesInstall says "Download and install automatically"
+// in the language the app shows.
+//
+// A setting.
+func UpdatesInstall() string { return In(i18n.Locale()).UpdatesInstall() }
+
+// UpdatesInstall says "Download and install automatically"
+// in the language of msgs.
+//
+// A setting.
+func (msgs Messages) UpdatesInstall() string {
+	return Catalog.Format(msgs.locale, "updatesInstall", nil)
+}
+
+// UpdatesInstallButton says "Install and Relaunch"
+// in the language the app shows.
+//
+// The update window's primary button.
+func UpdatesInstallButton() string { return In(i18n.Locale()).UpdatesInstallButton() }
+
+// UpdatesInstallButton says "Install and Relaunch"
+// in the language of msgs.
+//
+// The update window's primary button.
+func (msgs Messages) UpdatesInstallButton() string {
+	return Catalog.Format(msgs.locale, "updatesInstallButton", nil)
+}
+
+// UpdatesInstallDetail says "New versions start the next time Windeck opens."
+// in the language the app shows.
+//
+// The setting's description.
+func UpdatesInstallDetail() string { return In(i18n.Locale()).UpdatesInstallDetail() }
+
+// UpdatesInstallDetail says "New versions start the next time Windeck opens."
+// in the language of msgs.
+//
+// The setting's description.
+func (msgs Messages) UpdatesInstallDetail() string {
+	return Catalog.Format(msgs.locale, "updatesInstallDetail", nil)
+}
+
+// UpdatesInstallFailed says "Couldn't install the update"
+// in the language the app shows.
+//
+// The update window.
+func UpdatesInstallFailed() string { return In(i18n.Locale()).UpdatesInstallFailed() }
+
+// UpdatesInstallFailed says "Couldn't install the update"
+// in the language of msgs.
+//
+// The update window.
+func (msgs Messages) UpdatesInstallFailed() string {
+	return Catalog.Format(msgs.locale, "updatesInstallFailed", nil)
+}
+
+// UpdatesLast says "Last checked {when}"
+// in the language the app shows.
+//
+// When the app last checked.
+func UpdatesLast(when string) string { return In(i18n.Locale()).UpdatesLast(when) }
+
+// UpdatesLast says "Last checked {when}"
+// in the language of msgs.
+//
+// When the app last checked.
+func (msgs Messages) UpdatesLast(when string) string {
+	return Catalog.Format(msgs.locale, "updatesLast", map[string]any{"when": when})
+}
+
+// UpdatesLater says "Later"
+// in the language the app shows.
+//
+// A button.
+func UpdatesLater() string { return In(i18n.Locale()).UpdatesLater() }
+
+// UpdatesLater says "Later"
+// in the language of msgs.
+//
+// A button.
+func (msgs Messages) UpdatesLater() string {
+	return Catalog.Format(msgs.locale, "updatesLater", nil)
+}
+
+// UpdatesLatest says "You're up to date"
+// in the language the app shows.
+//
+// The update window.
+func UpdatesLatest() string { return In(i18n.Locale()).UpdatesLatest() }
+
+// UpdatesLatest says "You're up to date"
+// in the language of msgs.
+//
+// The update window.
+func (msgs Messages) UpdatesLatest() string {
+	return Catalog.Format(msgs.locale, "updatesLatest", nil)
+}
+
+// UpdatesLatestDetail says "Windeck {version} is the newest version."
+// in the language the app shows.
+//
+// The update window.
+func UpdatesLatestDetail(version string) string {
+	return In(i18n.Locale()).UpdatesLatestDetail(version)
+}
+
+// UpdatesLatestDetail says "Windeck {version} is the newest version."
+// in the language of msgs.
+//
+// The update window.
+func (msgs Messages) UpdatesLatestDetail(version string) string {
+	return Catalog.Format(msgs.locale, "updatesLatestDetail", map[string]any{"version": version})
+}
+
+// UpdatesNever says "Not checked yet"
+// in the language the app shows.
+//
+// The app never checked.
+func UpdatesNever() string { return In(i18n.Locale()).UpdatesNever() }
+
+// UpdatesNever says "Not checked yet"
+// in the language of msgs.
+//
+// The app never checked.
+func (msgs Messages) UpdatesNever() string {
+	return Catalog.Format(msgs.locale, "updatesNever", nil)
+}
+
+// UpdatesNotes says "What's new"
+// in the language the app shows.
+//
+// Above the release notes.
+func UpdatesNotes() string { return In(i18n.Locale()).UpdatesNotes() }
+
+// UpdatesNotes says "What's new"
+// in the language of msgs.
+//
+// Above the release notes.
+func (msgs Messages) UpdatesNotes() string {
+	return Catalog.Format(msgs.locale, "updatesNotes", nil)
+}
+
+// UpdatesPermissionNote says "After the update, macOS may ask you to allow Accessibility again."
+// in the language the app shows.
+//
+// A note in the update window.
+func UpdatesPermissionNote() string { return In(i18n.Locale()).UpdatesPermissionNote() }
+
+// UpdatesPermissionNote says "After the update, macOS may ask you to allow Accessibility again."
+// in the language of msgs.
+//
+// A note in the update window.
+func (msgs Messages) UpdatesPermissionNote() string {
+	return Catalog.Format(msgs.locale, "updatesPermissionNote", nil)
+}
+
+// UpdatesReady says "Windeck {version} is ready"
+// in the language the app shows.
+//
+// The update window, once the update is installed.
+func UpdatesReady(version string) string { return In(i18n.Locale()).UpdatesReady(version) }
+
+// UpdatesReady says "Windeck {version} is ready"
+// in the language of msgs.
+//
+// The update window, once the update is installed.
+func (msgs Messages) UpdatesReady(version string) string {
+	return Catalog.Format(msgs.locale, "updatesReady", map[string]any{"version": version})
+}
+
+// UpdatesReadyDetail says "Restart Windeck to use it."
+// in the language the app shows.
+//
+// Under the title line.
+func UpdatesReadyDetail() string { return In(i18n.Locale()).UpdatesReadyDetail() }
+
+// UpdatesReadyDetail says "Restart Windeck to use it."
+// in the language of msgs.
+//
+// Under the title line.
+func (msgs Messages) UpdatesReadyDetail() string {
+	return Catalog.Format(msgs.locale, "updatesReadyDetail", nil)
+}
+
+// UpdatesRelaunch says "Relaunch"
+// in the language the app shows.
+//
+// A button relaunching the app into the update.
+func UpdatesRelaunch() string { return In(i18n.Locale()).UpdatesRelaunch() }
+
+// UpdatesRelaunch says "Relaunch"
+// in the language of msgs.
+//
+// A button relaunching the app into the update.
+func (msgs Messages) UpdatesRelaunch() string {
+	return Catalog.Format(msgs.locale, "updatesRelaunch", nil)
+}
+
+// UpdatesSkip says "Skip This Version"
+// in the language the app shows.
+//
+// A button.
+func UpdatesSkip() string { return In(i18n.Locale()).UpdatesSkip() }
+
+// UpdatesSkip says "Skip This Version"
+// in the language of msgs.
+//
+// A button.
+func (msgs Messages) UpdatesSkip() string {
+	return Catalog.Format(msgs.locale, "updatesSkip", nil)
+}
+
+// UpdatesTitle says "Software Update"
+// in the language the app shows.
+//
+// The update window's title.
+func UpdatesTitle() string { return In(i18n.Locale()).UpdatesTitle() }
+
+// UpdatesTitle says "Software Update"
+// in the language of msgs.
+//
+// The update window's title.
+func (msgs Messages) UpdatesTitle() string {
+	return Catalog.Format(msgs.locale, "updatesTitle", nil)
 }

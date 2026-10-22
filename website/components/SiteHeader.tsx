@@ -1,6 +1,7 @@
 import type { Content } from '../lib/content';
 import { DOWNLOAD_URL } from '../lib/content';
 
+// The nav: 64 high, the mark at the left, the one action at the right.
 export default function SiteHeader(props: { t: Content }) {
   const n = () => props.t.nav;
   return (
@@ -10,7 +11,7 @@ export default function SiteHeader(props: { t: Content }) {
           <img src="/icon.png" width="28" height="28" alt="" />
           <span>Windeck</span>
         </a>
-        <nav class="nav">
+        <nav class="nav" aria-label="Sections">
           <a href="#features">{n().features}</a>
           <a href="#smart">{n().smart}</a>
           <a href="#privacy">{n().privacy}</a>
@@ -21,7 +22,7 @@ export default function SiteHeader(props: { t: Content }) {
           <a class="lang" href={n().otherHref}>
             {n().other}
           </a>
-          <a class="button button--small" href={DOWNLOAD_URL}>
+          <a class="button button--primary" href={DOWNLOAD_URL}>
             {n().download}
           </a>
         </div>

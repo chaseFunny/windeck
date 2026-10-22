@@ -2,33 +2,35 @@ package main
 
 import "github.com/egoist/mygo/ui"
 
-// icon draws an icon of Windeck's own on a 16 grid, in the text color, as
-// SF Symbols draw.
+// icon draws a Lucide icon (lucide.dev) in the text color, with the
+// design's 1.5 line: shown at 16, 20 or 24.
 func icon(shapes string) *ui.SVG {
-	return ui.MustParseSVG([]byte(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">` + shapes + `</svg>`))
+	return ui.MustParseSVG([]byte(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">` + shapes + `</svg>`))
 }
 
 var (
-	searchIcon     = icon(`<circle cx="7" cy="7" r="4.5"/><path d="M10.4 10.4 14 14"/>`)
-	closeIcon      = icon(`<path d="M4 4l8 8M12 4l-8 8"/>`)
-	minimizeIcon   = icon(`<path d="M3.5 8h9"/>`)
-	chevronRight   = icon(`<path d="M6 3.5 10.5 8 6 12.5"/>`)
-	chevronDown    = icon(`<path d="M3.5 6 8 10.5 12.5 6"/>`)
-	starIcon       = ui.MustParseSVG([]byte(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.2l1.5 4.6 4.8.1-3.9 2.9 1.4 4.6L8 10.6l-3.8 2.8 1.4-4.6-3.9-2.9 4.8-.1z"/></svg>`))
-	displayIcon    = icon(`<rect x="2" y="2.8" width="12" height="8.4" rx="1.4"/><path d="M6 13.6h4M8 11.2v2.4"/>`)
-	desktopIcon    = icon(`<rect x="2" y="3" width="12" height="10" rx="1.6"/><path d="M2 6h12"/>`)
-	minimizedIcon  = icon(`<path d="M8 2.5v7M5 6.8 8 9.8l3-3"/><path d="M3 13h10"/>`)
-	hiddenIcon     = icon(`<path d="M2 8s2.2-4 6-4 6 4 6 4-2.2 4-6 4-6-4-6-4z"/><path d="M3 13 13 3"/>`)
-	fullscreenIcon = icon(`<path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10"/>`)
-	gearIcon       = icon(`<circle cx="8" cy="8" r="2.2"/><path d="M8 1.8v1.6M8 12.6v1.6M3.6 3.6l1.1 1.1M11.3 11.3l1.1 1.1M1.8 8h1.6M12.6 8h1.6M3.6 12.4l1.1-1.1M11.3 4.7l1.1-1.1"/>`)
-	lockIcon       = icon(`<rect x="3" y="7" width="10" height="7" rx="1.6"/><path d="M5.2 7V5a2.8 2.8 0 0 1 5.6 0v2"/>`)
-	sparkleIcon    = icon(`<path d="M8 2v3M8 11v3M2 8h3M11 8h3M4 4l1.8 1.8M10.2 10.2 12 12M4 12l1.8-1.8M10.2 5.8 12 4"/>`)
-	keyIcon        = icon(`<circle cx="5.5" cy="10.5" r="3"/><path d="M7.7 8.3 13.5 2.5M11.5 4.5l1.5 1.5M10 6l1.2 1.2"/>`)
-	infoIcon       = icon(`<circle cx="8" cy="8" r="6"/><path d="M8 7.2v4M8 4.8v.1"/>`)
-	checkIcon      = icon(`<path d="M3.5 8.4 6.5 11.3 12.5 4.8"/>`)
-	plusIcon       = icon(`<path d="M8 3v10M3 8h10"/>`)
-	appIcon        = icon(`<rect x="2.5" y="2.5" width="11" height="11" rx="3"/>`)
-	keyboardIcon   = icon(`<rect x="1.5" y="4" width="13" height="8" rx="1.6"/><path d="M4 6.6h.1M6.6 6.6h.1M9.3 6.6h.1M12 6.6h.1M5 9.4h6"/>`)
-	shieldIcon     = icon(`<path d="M8 1.8 13 3.6v4c0 3.2-2.2 5.4-5 6.6-2.8-1.2-5-3.4-5-6.6v-4z"/>`)
-	screenIcon     = icon(`<rect x="2" y="3" width="12" height="8.5" rx="1.4"/><circle cx="8" cy="7.2" r="1.6"/><path d="M5.5 13.5h5"/>`)
+	searchIcon     = icon(`<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>`)                                                                                                                                                                                                                                // search
+	closeIcon      = icon(`<path d="M18 6 6 18"/><path d="m6 6 12 12"/>`)                                                                                                                                                                                                                                             // x
+	minimizeIcon   = icon(`<path d="M5 12h14"/>`)                                                                                                                                                                                                                                                                     // minus
+	minusIcon      = icon(`<circle cx="12" cy="12" r="10"/><path d="M8 12h8"/>`)                                                                                                                                                                                                                                      // circle-minus
+	chevronRight   = icon(`<path d="m9 18 6-6-6-6"/>`)                                                                                                                                                                                                                                                                // chevron-right
+	chevronDown    = icon(`<path d="m6 9 6 6 6-6"/>`)                                                                                                                                                                                                                                                                 // chevron-down
+	displayIcon    = icon(`<rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/>`)                                                                                                                                                                                                 // monitor
+	desktopIcon    = icon(`<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M10 4v4"/><path d="M2 8h20"/><path d="M6 4v4"/>`)                                                                                                                                                                                // app-window
+	minimizedIcon  = icon(`<path d="M12 17V3"/><path d="m6 11 6 6 6-6"/><path d="M19 21H5"/>`)                                                                                                                                                                                                                        // arrow-down-to-line
+	hiddenIcon     = icon(`<path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/>`) // eye-off
+	fullscreenIcon = icon(`<path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>`)                                                                                                                                           // maximize
+	gearIcon       = icon(`<path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/>`)                                                                                                                                                                                     // settings-2
+	handIcon       = icon(`<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>`)                                                                                                           // shield
+	sparkleIcon    = icon(`<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>`)                  // sparkles
+	keyIcon        = icon(`<path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r="1"/>`)                                                                 // key-round
+	infoIcon       = icon(`<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>`)                                                                                                                                                                                                               // info
+	checkIcon      = icon(`<path d="M20 6 9 17l-5-5"/>`)                                                                                                                                                                                                                                                              // check
+	appIcon        = icon(`<rect width="18" height="18" x="3" y="3" rx="2"/>`)                                                                                                                                                                                                                                        // square
+	accessIcon     = icon(`<circle cx="16" cy="4" r="1"/><path d="m18 19 1-7-6 1"/><path d="m5 8 3-3 5.5 3-2.36 3.5"/><path d="M4.24 14.5a5 5 0 0 0 6.88 6"/><path d="M13.76 17.5a5 5 0 0 0-6.88-6"/>`)                                                                                                               // accessibility
+	screenIcon     = icon(`<path d="M13 3H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-3"/><path d="M8 21h8"/><path d="M12 17v4"/><path d="m17 8 5-5"/><path d="M17 3h5v5"/>`)                                                                                                                                  // screen-share
+	keyboardIcon   = icon(`<path d="M10 8h.01"/><path d="M12 12h.01"/><path d="M14 8h.01"/><path d="M16 12h.01"/><path d="M18 8h.01"/><path d="M6 8h.01"/><path d="M7 16h10"/><path d="M8 12h.01"/><rect width="20" height="16" x="2" y="4" rx="2"/>`)                                                                // keyboard
+	externalIcon   = icon(`<path d="M7 7h10v10"/><path d="M7 17 17 7"/>`)                                                                                                                                                                                                                                             // arrow-up-right
+	// star, filled: the predicted window's mark.
+	starIcon = ui.MustParseSVG([]byte(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>`))
 )

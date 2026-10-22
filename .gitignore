@@ -6,3 +6,4 @@ node_modules/
 website/dist/
 website/.void/
 website/.void-wrangler.jsonc
+.cloudflare

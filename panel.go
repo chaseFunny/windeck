@@ -7,39 +7,66 @@ import (
 	"github.com/egoist/mygo"
 	"github.com/egoist/mygo/ui"
 
+	"windeck/internal/settings"
+	"windeck/internal/smart"
 	"windeck/internal/switcher"
 	"windeck/internal/wm"
 	"windeck/locales"
 )
 
 // The panel: the windows as tabs down the left, grouped by app, and the
-// highlighted window large in the middle. Tabs are for finding, the
+// highlighted window large at the right. Tabs are for finding, the
 // preview for making sure.
+//
+// It floats flat, as the design has what floats: one color, a 1-point
+// border and the large shadow, cut to the continuous corners of macOS's
+// panels. Every title in the list starts on one line, the icons on
+// another, so the eye runs straight down them.
 
 const (
-	panelInset   = 16  // room around the card for its shadow
-	sidebarWidth = 360 // the list's
-	previewPad   = 26
-	headerHeight = 56
+	panelRadius  = radiusCard
+	sidebarWidth = 352
+	listInset    = 8  // the list's padding at the sides
+	rowInset     = 8  // a row's, before its icon
+	rowIcon      = 20 // the icons of the list
+	rowGap       = 12 // between a row's icon and its title
+	titleStart   = rowInset + rowIcon + rowGap
+
+	previewPad   = 32
+	headerHeight = 48
+	headerGap    = 24
+
+	// The list layout's.
+	listWidth     = 720
+	listRowHeight = 48
+	listPad       = 8
+	searchBlock   = 12 + 36 + 8 // the search field with its margins
 )
 
-var hoverMotion = ui.ElementTransition{Colors: true, Duration: 110 * time.Millisecond}
+// The design's motion: 120 ms for hover, easing out.
+var (
+	easeOut     = ui.CubicBezier(0.2, 0, 0, 1)
+	hoverMotion = ui.ElementTransition{Colors: true, Duration: 120 * time.Millisecond, Ease: easeOut}
+)
 
 func newPanel(a *App) *mygo.Window {
 	w := mygo.NewWindow(mygo.WindowOptions{
-		Title:         "Windeck",
-		Panel:         true,
-		Hidden:        true,
-		Frameless:     true,
-		Transparent:   true,
-		DisableShadow: true,
-		Width:         1100,
-		Height:        700,
-		Content:       ui.View(a.panelView),
+		Title:       "Windeck",
+		Panel:       true,
+		Hidden:      true,
+		Frameless:   true,
+		Transparent: true,
+		Width:       1100,
+		Height:      700,
+		Content:     ui.View(a.panelView),
 	})
 	// Hidden rather than closed, to show at once the next time: on
-	// Escape the view does not take, and as the user goes elsewhere.
+	// Escape the view does not take, and as the user goes elsewhere. As
+	// Windeck quits, it closes like any window, or quitting would stop.
 	w.OnClose(func(e *mygo.CloseEvent) {
+		if a.quitting {
+			return
+		}
 		e.PreventDefault()
 		a.do(a.sw.Dismiss())
 	})
@@ -52,21 +79,89 @@ func newPanel(a *App) *mygo.Window {
 }
 
 func (a *App) panelView(c *ui.Context) {
-	pal := paletteFor(c)
+	pal := themed(c)
 	c.Root().Background(ui.Transparent)
 	if a.sw.Phase() == switcher.Idle {
 		return
 	}
-	ui.Box(c).Fill().Padding(panelInset).Children(func() {
-		card := ui.Row(c.Key("card")).Fill().Radius(18).Clip().AlignItems(ui.Stretch).
-			Background(pal.card).Border(1, pal.cardBorder).
-			Shadow(0, 18, 48, 0, pal.shadow).Shadow(0, 2, 6, 0, pal.shadow2)
-		card.Children(func() {
-			a.sidebarView(c, pal)
-			a.previewView(c, pal)
-		})
+	if a.set.Layout == settings.LayoutList {
+		a.listPanelView(c, pal)
+		a.panelKeys(c)
+		return
+	}
+	card := ui.Row(c.Key("card")).Fill().Radius(panelRadius).Clip().AlignItems(ui.Stretch).
+		Background(pal.bgElevated).Border(1, pal.border)
+	card.Children(func() {
+		a.sidebarView(c, pal)
+		a.previewView(c, pal)
 	})
 	a.panelKeys(c)
+}
+
+// --- the list layout ---
+
+// listPanelView is the list layout: one column of the windows, the most
+// recent first, each its app's icon and its title, nothing else, as the
+// app switchers of old showed them. Search adds its field at the top.
+func (a *App) listPanelView(c *ui.Context, pal *palette) {
+	card := ui.Column(c.Key("card")).Fill().Radius(panelRadius).Clip().AlignItems(ui.Stretch).
+		Background(pal.bgElevated).Border(1, pal.border)
+	card.Children(func() {
+		if a.sw.Phase() == switcher.Searching {
+			a.searchView(c, pal)
+		}
+		list := ui.Scroll(c.Key("list")).Grow(1).MinHeight(0).TrackScroll(&a.ses.scroll).Padding(listPad)
+		list.Children(func() {
+			if len(a.ses.rows) == 0 {
+				a.emptyList(c, pal)
+			}
+			for _, r := range a.ses.rows {
+				a.listRow(c, pal, r)
+			}
+		})
+		a.scrolled()
+	})
+}
+
+// listRow is a window in the list layout: the app's icon and the title,
+// with the window's states and its place in the cycle at the right.
+func (a *App) listRow(c *ui.Context, pal *palette, r row) {
+	id := r.id
+	sel := id == a.sw.Selected()
+	title := rowTitle(r)
+	el := ui.Row(c.Key(id)).Height(listRowHeight).Padding(0, 12).Gap(12).AlignItems(ui.Center).Radius(radiusCtl).
+		Cursor(ui.CursorPointer).Label(title + ", " + r.name)
+	hovered := el.Hovered()
+	switch {
+	case sel:
+		el.Background(pal.brandSubtle)
+	case hovered:
+		el.Background(pal.bgMuted)
+	}
+	if hovered && !sel {
+		// Only the pointer's hover eases in: the highlight moves with
+		// the keys at once, leaving no trail as Tab is held.
+		el.Transition(hoverMotion)
+	}
+	if sel && a.ses.scrollTo {
+		el.ScrollIntoView()
+	}
+	a.hovering(id, hovered)
+	el.Children(func() {
+		a.appIconView(c, pal, r.path, 32)
+		ui.Box(c).Grow(1).MinWidth(0).Children(func() {
+			a.titleText(c, pal, title, 16, 400, sel)
+		})
+		if hovered && r.kind == rowWindow {
+			a.rowButtons(c, pal, r)
+			return
+		}
+		ui.Row(c).Gap(4).Shrink(0).AlignItems(ui.Center).Children(func() {
+			a.badges(c, pal, r, true)
+			a.ordinal(c, pal, id)
+		})
+	})
+	el.OnClick(func() { a.do(a.sw.Click(id)) })
 }
 
 // panelKeys are the keys of state B, which the panel's search field has:
@@ -96,18 +191,18 @@ func (a *App) panelKeys(c *ui.Context) {
 
 func (a *App) sidebarView(c *ui.Context, pal *palette) {
 	col := ui.Column(c.Key("sidebar")).Width(sidebarWidth).Shrink(0).AlignItems(ui.Stretch).
-		Background(pal.sidebar).BorderWidth(0, 1, 0, 0).BorderColor(pal.divider)
+		Background(pal.bgSubtle).BorderWidth(0, 1, 0, 0).BorderColor(pal.border)
 	col.Children(func() {
 		a.searchView(c, pal)
-		list := ui.Scroll(c.Key("list")).Grow(1).MinHeight(0).TrackScroll(&a.ses.scroll).Padding(2, 10, 10, 10).Gap(2)
+		list := ui.Scroll(c.Key("list")).Grow(1).MinHeight(0).TrackScroll(&a.ses.scroll).Padding(0, listInset, 8, listInset).Gap(0)
 		list.Children(func() {
 			if len(a.ses.rows) == 0 {
-				ui.Text(c, locales.ListEmpty()).FontSize(13).TextColor(pal.textMuted).Margin(24, 8)
+				a.emptyList(c, pal)
 			}
-			for _, r := range a.ses.rows {
+			for i, r := range a.ses.rows {
 				switch r.kind {
 				case rowGroup:
-					a.groupRow(c, pal, r)
+					a.groupRow(c, pal, r, i == 0)
 				default:
 					a.windowRow(c, pal, r)
 				}
@@ -118,16 +213,34 @@ func (a *App) sidebarView(c *ui.Context, pal *palette) {
 	})
 }
 
+// emptyList says why the list is empty: nothing matches, or there is
+// nothing to switch to. An empty state, as the design draws them: a line
+// drawing, a rounded title and one sentence.
+func (a *App) emptyList(c *ui.Context, pal *palette) {
+	ui.Column(c).AlignItems(ui.Center).Gap(8).Padding(48, 24).Children(func() {
+		ui.Icon(c, searchIcon).Size(48, 48).TextColor(pal.borderBold).Margin(0, 0, 8, 0)
+		title, detail := locales.ListEmpty(), ""
+		if a.ses.query != "" {
+			title, detail = locales.SearchNoResults(a.ses.query), locales.SearchNoResultsHint()
+		}
+		ui.Text(c, title).Font(fontDisplay).FontSize(16).FontWeight(700).TextColor(pal.text).TextAlign(ui.Center).MaxLines(2).Ellipsis("…")
+		if detail != "" {
+			ui.Text(c, detail).FontSize(13).TextColor(pal.textMuted).TextAlign(ui.Center)
+		}
+	})
+}
+
 // scrolled ends the frame's scrolling into view, which the highlight
 // asks for once.
 func (a *App) scrolled() { a.ses.scrollTo = false }
 
 func (a *App) searchView(c *ui.Context, pal *palette) {
-	box := ui.Row(c.Key("search")).Height(38).Shrink(0).Margin(12, 12, 8, 12).Padding(0, 10).Gap(8).Radius(10).AlignItems(ui.Center)
+	box := ui.Row(c.Key("search")).Height(36).Shrink(0).Margin(12, 12, 8, 12).Padding(0, 12).Gap(8).Radius(radiusCtl).AlignItems(ui.Center)
 	if a.sw.Phase() == switcher.Searching {
-		box.Background(pal.fieldFocus).Border(1, pal.accent.Alpha(0.55)).Shadow(0, 0, 0, 3, pal.accentSoft)
+		// A focused field: the violet border and the 3-point focus ring.
+		box.Background(pal.bgPage).Border(1, pal.brand).Shadow(0, 0, 0, 3, pal.focus)
 		box.Children(func() {
-			ui.Icon(c, searchIcon).Size(15, 15).TextColor(pal.textMuted)
+			ui.Icon(c, searchIcon).Size(16, 16).TextColor(pal.textMuted)
 			in := ui.TextInputBase(c.Key("q"), &a.ses.searchBuf).Grow(1).FontSize(14).TextColor(pal.text).
 				Placeholder(locales.SearchPlaceholder()).Bind(&a.ses.search).Label(locales.SearchPlaceholder())
 			if a.ses.focusSearch {
@@ -140,9 +253,13 @@ func (a *App) searchView(c *ui.Context, pal *palette) {
 		})
 		return
 	}
-	box.Background(pal.field).Cursor(ui.CursorText).Label(locales.SearchPlaceholder())
+	box.Background(pal.bgPage).Border(1, pal.border).Cursor(ui.CursorText).Label(locales.SearchPlaceholder())
+	if box.Hovered() {
+		box.Border(1, pal.borderBold)
+	}
+	box.Transition(hoverMotion)
 	box.Children(func() {
-		ui.Icon(c, searchIcon).Size(15, 15).TextColor(pal.textFaint)
+		ui.Icon(c, searchIcon).Size(16, 16).TextColor(pal.textFaint)
 		ui.Text(c, locales.SearchPlaceholder()).FontSize(14).TextColor(pal.textFaint).Grow(1).SingleLine()
 		kbd(c, pal, locales.KeySpace())
 	})
@@ -153,52 +270,64 @@ func (a *App) searchView(c *ui.Context, pal *palette) {
 
 // kbd draws a key, as the hints name them.
 func kbd(c *ui.Context, pal *palette, label string) {
-	ui.Box(c).Padding(1, 6).Radius(5).Background(pal.kbd).Border(1, pal.kbdBorder).Children(func() {
-		ui.Text(c, label).FontSize(11).FontWeight(500).TextColor(pal.textMuted).SingleLine()
+	ui.Box(c).MinWidth(20).Height(20).Padding(0, 4).Radius(radiusTag).Center().Background(pal.bgPage).Border(1, pal.border).Children(func() {
+		ui.Text(c, label).FontSize(12).FontWeight(500).TextColor(pal.textMuted).SingleLine()
 	})
 }
 
 func (a *App) hintsView(c *ui.Context, pal *palette) {
-	ui.Row(c.Key("hints")).Shrink(0).Wrap().GapX(12).GapY(6).Padding(10, 14, 12, 14).BorderWidth(1, 0, 0, 0).BorderColor(pal.divider).
-		AlignItems(ui.Center).Children(func() {
+	ui.Row(c.Key("hints")).Shrink(0).Height(40).Gap(12).Padding(0, 16).BorderWidth(1, 0, 0, 0).BorderColor(pal.border).
+		AlignItems(ui.Center).Clip().Children(func() {
 		hint := func(k, label string) {
-			ui.Row(c).Gap(5).AlignItems(ui.Center).Children(func() {
+			ui.Row(c).Gap(5).Shrink(0).AlignItems(ui.Center).Children(func() {
 				kbd(c, pal, k)
-				ui.Text(c, label).FontSize(11.5).TextColor(pal.textMuted).SingleLine()
+				ui.Text(c, label).FontSize(12).TextColor(pal.textMuted).SingleLine()
 			})
 		}
 		if a.sw.Phase() == switcher.Searching {
 			hint("↑↓", locales.HintMove())
-			hint("↵", locales.HintSwitch())
+			hint("↩", locales.HintSwitch())
 			hint("esc", locales.HintClear())
 			return
 		}
 		hint("⇥", locales.HintNext())
-		hint("↑↓", locales.HintMove())
+		if !a.set.ActionKeys {
+			hint("/", locales.ShortcutsSearch())
+			return
+		}
 		hint("W", locales.HintClose())
 		hint("M", locales.HintMinimize())
 		hint("Q", locales.HintQuit())
 	})
 }
 
-func (a *App) groupRow(c *ui.Context, pal *palette, r row) {
-	h := ui.Row(c.Key("g:"+r.key)).Padding(8, 8, 4, 6).Gap(7).AlignItems(ui.Center).Radius(8).Cursor(ui.CursorPointer).
-		Label(r.name)
-	if h.Hovered() {
-		h.Background(pal.rowHover)
+// groupRow is the header of an app's windows: its icon and name where
+// the rows have theirs, the count and the arrow at the right, as a
+// sidebar section of Finder's.
+func (a *App) groupRow(c *ui.Context, pal *palette, r row, first bool) {
+	h := ui.Row(c.Key("g:"+r.key)).Height(32).Padding(0, 8, 0, rowInset).Gap(rowGap).AlignItems(ui.Center).Radius(radiusCtl).
+		Cursor(ui.CursorPointer).Label(r.name)
+	if !first {
+		h.Margin(8, 0, 0, 0)
+	}
+	hovered := h.Hovered()
+	if hovered {
+		h.Background(pal.bgMuted)
 	}
 	h.Transition(hoverMotion)
 	h.Children(func() {
+		a.appIconView(c, pal, r.path, rowIcon)
+		ui.Text(c, r.name).FontSize(13).FontWeight(500).TextColor(pal.textMuted).SingleLine().Ellipsis("…").Grow(1).MinWidth(0)
+		ui.Text(c, itoa(r.count)).FontSize(12).TextColor(pal.textFaint).Shrink(0)
 		chev := chevronDown
 		if !r.open {
 			chev = chevronRight
 		}
-		ui.Icon(c, chev).Size(11, 11).TextColor(pal.textFaint)
-		a.appIconView(c, pal, r.path, 18)
-		ui.Text(c, r.name).FontSize(12.5).FontWeight(600).TextColor(pal.textMuted).SingleLine().Ellipsis("…").Shrink(1).MinWidth(0)
-		ui.Box(c).Padding(0, 6).Radius(8).Background(pal.chip).Children(func() {
-			ui.Text(c, itoa(r.count)).FontSize(11).FontWeight(500).TextColor(pal.chipText)
-		})
+		col := pal.textFaint
+		if hovered {
+			col = pal.textMuted
+		}
+		ui.Icon(c, chev).Size(16, 16).TextColor(col).Shrink(0)
 	})
 	key, open := r.key, r.open
 	h.OnClick(func() {
@@ -207,50 +336,54 @@ func (a *App) groupRow(c *ui.Context, pal *palette, r row) {
 	})
 }
 
+// rowTitle is what a row says: the window's title without its app's
+// name, which the row shows anyway, or the app's name.
+func rowTitle(r row) string {
+	if r.kind == rowApp || r.win.Title == "" {
+		return r.name
+	}
+	return shortTitle(r.win.Title, r.name)
+}
+
 func (a *App) windowRow(c *ui.Context, pal *palette, r row) {
 	id := r.id
 	sel := id == a.sw.Selected()
-	title := r.win.Title
-	if r.kind == rowApp {
-		title = r.name
-	} else if title == "" {
-		title = r.name
-	}
-	el := ui.Row(c.Key(id)).Gap(10).AlignItems(ui.Center).Radius(9).MinHeight(38).Cursor(ui.CursorPointer).
+	title := rowTitle(r)
+	sub := !r.child && r.kind == rowWindow && title != r.name
+	el := ui.Row(c.Key(id)).Gap(rowGap).AlignItems(ui.Center).Radius(radiusCtl).Cursor(ui.CursorPointer).
 		Label(title + ", " + r.name)
-	left := float32(10)
-	if r.child {
-		left = 21
+	if sub {
+		el.MinHeight(48).Padding(4, 8, 4, rowInset)
+	} else {
+		el.MinHeight(36).Padding(4, 8, 4, rowInset)
 	}
-	el.Padding(7, 8, 7, left)
+	if r.child {
+		el.PaddingStart(titleStart)
+	}
 	hovered := el.Hovered()
 	switch {
 	case sel:
-		el.Background(pal.rowSelected).Shadow(0, 1, 3, 0, pal.rowShadow).Border(1, pal.accent.Alpha(0.35))
+		el.Background(pal.brandSubtle)
 	case hovered:
-		el.Background(pal.rowHover)
+		el.Background(pal.bgMuted)
 	}
-	el.Transition(hoverMotion)
+	if hovered && !sel {
+		// Only the pointer's hover eases in: the highlight moves with
+		// the keys at once, leaving no trail as Tab is held.
+		el.Transition(hoverMotion)
+	}
 	if sel && a.ses.scrollTo {
 		el.ScrollIntoView()
 	}
 	a.hovering(id, hovered)
 	el.Children(func() {
-		if r.child {
-			// The line down a group's windows, in place of their icon.
-			ui.Box(c).Width(1.5).Height(22).Radius(1).Background(pal.guide).Margin(0, 6, 0, 2)
-		} else {
-			a.appIconView(c, pal, r.path, 22)
+		if !r.child {
+			a.appIconView(c, pal, r.path, rowIcon)
 		}
 		ui.Column(c).Grow(1).MinWidth(0).Gap(1).Children(func() {
-			t := ui.Text(c, title).FontSize(13).TextColor(pal.text).MaxLines(2).Ellipsis("…")
-			if sel {
-				t.FontWeight(600)
-			} else {
-				t.FontWeight(450)
-			}
-			if !r.child && r.kind == rowWindow && r.win.Title != "" && r.win.Title != r.name {
-				ui.Text(c, r.name).FontSize(11).TextColor(pal.textMuted).SingleLine().Ellipsis("…")
+			a.titleText(c, pal, title, 14, 400, sel)
+			if sub {
+				ui.Text(c, r.name).FontSize(12).TextColor(pal.textMuted).SingleLine().Ellipsis("…")
 			}
 		})
 		if hovered && r.kind == rowWindow {
@@ -263,6 +396,40 @@ func (a *App) windowRow(c *ui.Context, pal *palette, r row) {
 		})
 	})
 	el.OnClick(func() { a.do(a.sw.Click(id)) })
+}
+
+// titleText is a title on one line, its letters the search matched in
+// bold, as Spotlight shows them. The chosen row's title is the
+// subtle-violet's text color.
+func (a *App) titleText(c *ui.Context, pal *palette, title string, size float32, weight int, sel bool) {
+	color := pal.text
+	if sel {
+		color = pal.brandOnSub
+	}
+	at := smart.Positions(a.ses.query, title)
+	// Letters strewn about read as noise: only a run of them is bold.
+	if len(at) > 0 && at[len(at)-1]-at[0] != len(at)-1 {
+		at = nil
+	}
+	if len(at) == 0 {
+		ui.Text(c, title).FontSize(size).FontWeight(weight).TextColor(color).SingleLine().Ellipsis("…")
+		return
+	}
+	var spans []ui.Span
+	runes := []rune(title)
+	start, bold := 0, slices.Contains(at, 0)
+	for i := 1; i <= len(runes); i++ {
+		b := i < len(runes) && slices.Contains(at, i)
+		if i == len(runes) || b != bold {
+			s := ui.Span{Text: string(runes[start:i]), Size: size, Weight: weight, Color: color}
+			if bold {
+				s.Weight = 700
+			}
+			spans = append(spans, s)
+			start, bold = i, b
+		}
+	}
+	ui.RichText(c, spans...).SingleLine().Ellipsis("…")
 }
 
 // hovering follows the pointer from row to row: the row under it is
@@ -299,15 +466,19 @@ func (a *App) rowButtons(c *ui.Context, pal *palette, r row) {
 }
 
 func smallButton(c *ui.Context, pal *palette, key string, svg *ui.SVG, label string, danger bool) ui.Element {
-	b := ui.ButtonBase(c.Key(key)).Size(24, 24).Radius(6).Center().TextColor(pal.textMuted).Label(label).Tooltip(label)
-	if b.Hovered() {
-		if danger {
-			b.Background(pal.danger).TextColor(ui.RGB(255, 255, 255))
-		} else {
-			b.Background(pal.chip).TextColor(pal.text)
-		}
+	b := ui.ButtonBase(c.Key(key)).Size(24, 24).Radius(radiusTag).Center().TextColor(pal.textMuted).Label(label).Tooltip(label)
+	switch {
+	case b.Pressed() && danger:
+		b.Background(pal.danger.Alpha(0.85)).TextColor(pal.onBrand)
+	case b.Hovered() && danger:
+		b.Background(pal.danger).TextColor(pal.onBrand)
+	case b.Pressed():
+		b.Background(pal.borderBold).TextColor(pal.text)
+	case b.Hovered():
+		b.Background(pal.bgMuted).TextColor(pal.text)
 	}
-	b.Children(func() { ui.Icon(c, svg).Size(13, 13) })
+	b.Transition(hoverMotion)
+	b.Children(func() { ui.Icon(c, svg).Size(16, 16) })
 	return b
 }
 
@@ -319,55 +490,55 @@ func (a *App) ordinal(c *ui.Context, pal *palette, id wm.WindowID) {
 	}
 	i := slices.Index(a.sw.Cycle(), id)
 	if id == a.ses.predicted && i == 1 {
-		ui.Icon(c, starIcon).Size(11, 11).TextColor(pal.star).Tooltip(locales.PredictedTip()).Label(locales.PredictedTip())
+		ui.Icon(c, starIcon).Size(12, 12).TextColor(pal.brandText).Tooltip(locales.PredictedTip()).Label(locales.PredictedTip())
 	}
 	if i >= 0 && i < 3 {
-		ui.Text(c, itoa(i+1)).FontSize(11).FontWeight(600).TextColor(pal.textFaint).Width(10).TextAlign(ui.End)
+		ui.Text(c, itoa(i+1)).FontSize(12).FontWeight(500).TextColor(pal.textFaint).Width(12).TextAlign(ui.End)
 	}
 }
 
-// badges are a window's states: where it is and how it shows.
+// badges are a window's states: where it is and how it shows. The list
+// shows them as icons, with the words as a tooltip; the preview's header
+// spells them out.
 func (a *App) badges(c *ui.Context, pal *palette, r row, compact bool) {
-	chip := func(svg *ui.SVG, label string) {
-		b := ui.Row(c).Gap(3).Padding(2, 5).Radius(6).Background(pal.chip).AlignItems(ui.Center).Shrink(0).Label(label)
+	chip := func(svg *ui.SVG, short, label string) {
+		// A tag, as the design's: 22 high, 12-point text, gray.
+		b := ui.Row(c).Gap(4).Height(22).Padding(0, 4).Radius(radiusTag).Background(pal.bgMuted).AlignItems(ui.Center).Shrink(0).Label(label)
 		if compact {
 			b.Tooltip(label)
+		} else {
+			b.Padding(0, 8)
 		}
 		b.Children(func() {
-			ui.Icon(c, svg).Size(11, 11).TextColor(pal.chipText)
-			if !compact {
-				ui.Text(c, label).FontSize(11).TextColor(pal.chipText).SingleLine()
+			ui.Icon(c, svg).Size(14, 14).TextColor(pal.textMuted)
+			text := label
+			if compact {
+				text = short
+			}
+			if text != "" {
+				ui.Text(c, text).FontSize(12).TextColor(pal.textMuted).SingleLine()
 			}
 		})
 	}
-	text := func(label string) {
-		ui.Box(c).Padding(1, 5).Radius(6).Background(pal.chip).Shrink(0).Children(func() {
-			ui.Text(c, label).FontSize(10.5).FontWeight(500).TextColor(pal.chipText).SingleLine()
-		})
-	}
 	if r.kind == rowApp {
-		text(locales.BadgeNoWindows())
+		ui.Text(c, locales.BadgeNoWindows()).FontSize(12).TextColor(pal.textFaint).SingleLine()
 		return
 	}
 	w := r.win
 	if w.Space > 0 && !w.OnCurrentSpace && !w.Minimized {
-		if compact {
-			text(locales.BadgeDesktopShort(w.Space))
-		} else {
-			chip(desktopIcon, locales.BadgeDesktop(w.Space))
-		}
+		chip(desktopIcon, itoa(w.Space), locales.BadgeDesktop(w.Space))
 	}
 	if w.External {
-		chip(displayIcon, locales.BadgeDisplay())
+		chip(displayIcon, "", locales.BadgeDisplay())
 	}
 	if w.FullScreen {
-		chip(fullscreenIcon, locales.BadgeFullScreen())
+		chip(fullscreenIcon, "", locales.BadgeFullScreen())
 	}
 	if w.Minimized {
-		chip(minimizedIcon, locales.BadgeMinimized())
+		chip(minimizedIcon, "", locales.BadgeMinimized())
 	}
 	if w.Hidden {
-		chip(hiddenIcon, locales.BadgeHidden())
+		chip(hiddenIcon, "", locales.BadgeHidden())
 	}
 }
 
@@ -380,7 +551,8 @@ func (a *App) appIconView(c *ui.Context, pal *palette, path string, size float32
 		ui.Image(c, b).Size(size, size).Shrink(0)
 		return
 	}
-	ui.Box(c).Size(size, size).Shrink(0).Radius(size / 4.5).Background(pal.chip)
+	// Until the icon loads, the shape of one.
+	ui.Box(c).Size(size, size).Shrink(0).Radius(size / 4.5).Background(pal.bgMuted)
 }
 
 // --- the preview ---
@@ -388,36 +560,48 @@ func (a *App) appIconView(c *ui.Context, pal *palette, path string, size float32
 func (a *App) previewView(c *ui.Context, pal *palette) {
 	id := a.sw.Selected()
 	r, ok := a.rowOf(id)
-	col := ui.Column(c.Key("preview")).Grow(1).MinWidth(0).Padding(previewPad-6, previewPad, previewPad, previewPad).Gap(14).AlignItems(ui.Stretch)
+	col := ui.Column(c.Key("preview")).Grow(1).MinWidth(0).Padding(24, previewPad, previewPad, previewPad).Gap(headerGap).AlignItems(ui.Stretch)
 	col.Children(func() {
 		if !ok {
-			ui.Box(c).Grow(1).Center().Children(func() {
-				ui.Text(c, locales.ListEmpty()).FontSize(14).TextColor(pal.textMuted)
-			})
 			return
 		}
 		a.previewHeader(c, pal, r)
-		stage := ui.Box(c.Key("stage")).Grow(1).MinHeight(0).Center().Radius(14).Background(pal.stage)
+		stage := ui.Box(c.Key("stage")).Grow(1).MinHeight(0).Center()
 		stage.Children(func() {
 			var bmp *ui.Bitmap
-			if r.kind == rowWindow {
+			if r.kind == rowWindow && a.showsPicture(r.win) {
 				bmp = a.previewOf(id)
 			}
+			// The picture as large as the stage takes it, never larger
+			// than the window is: a small window stays small.
+			W, H := c.Size()
+			sw := W - sidebarWidth - 2*previewPad
+			sh := H - 24 - headerHeight - headerGap - previewPad
 			if bmp == nil {
+				if a.picturePending(r) && sw > 0 && sh > 0 {
+					// Its picture is on the way: the window's shape, in
+					// the panel's own color, where the picture comes, so
+					// that it fills in rather than replacing a card. Tab
+					// held through windows shows no flashing.
+					bw, bh := float32(r.win.Bounds.W), float32(r.win.Bounds.H)
+					s := min(sw/bw, sh/bh, 1)
+					ui.Box(c).Size(bw*s, bh*s).Radius(radiusCard).Background(pal.bgSubtle).Border(1, pal.border)
+					return
+				}
 				a.fallbackCard(c, pal, r)
 				return
 			}
-			// Fit the picture to the stage, as large as it goes.
-			W, H := c.Size()
-			sw := W - 2*panelInset - sidebarWidth - 2*previewPad - 24
-			sh := H - 2*panelInset - headerHeight - 14 - previewPad*2 - 24
 			bw, bh := bmp.Size()
 			if bw <= 0 || bh <= 0 || sw <= 0 || sh <= 0 {
 				return
 			}
 			s := min(sw/float32(bw), sh/float32(bh))
-			ui.Image(c, bmp).Size(float32(bw)*s, float32(bh)*s).Radius(10).Border(1, pal.frame).
-				Shadow(0, 10, 30, 0, pal.shadow2).Label(locales.PreviewOf(r.win.Title))
+			if r.win.Bounds.W > 0 {
+				s = min(s, float32(r.win.Bounds.W)/float32(bw))
+			}
+			// A picture: the design's 16 corners and a border, no shadow.
+			ui.Image(c, bmp).Size(float32(bw)*s, float32(bh)*s).Radius(radiusCard).Border(1, pal.border).
+				Label(locales.PreviewOf(r.win.Title))
 		})
 	})
 }
@@ -433,16 +617,18 @@ func (a *App) rowOf(id wm.WindowID) (row, bool) {
 
 func (a *App) previewHeader(c *ui.Context, pal *palette, r row) {
 	ui.Row(c.Key("head")).Height(headerHeight).Shrink(0).Gap(12).AlignItems(ui.Center).Children(func() {
-		a.appIconView(c, pal, r.path, 34)
-		ui.Column(c).Grow(1).MinWidth(0).Gap(2).Children(func() {
+		a.appIconView(c, pal, r.path, 32)
+		ui.Column(c).Grow(1).MinWidth(0).Gap(1).Children(func() {
 			title := r.win.Title
 			if title == "" || r.kind == rowApp {
 				title = r.name
 			}
-			ui.Text(c, title).FontSize(17).FontWeight(650).TextColor(pal.text).MaxLines(2).Ellipsis("…")
-			ui.Text(c, r.name).FontSize(12.5).TextColor(pal.textMuted).SingleLine()
+			ui.Text(c, title).FontSize(16).FontWeight(500).TextColor(pal.text).SingleLine().Ellipsis("…")
+			if title != r.name {
+				ui.Text(c, r.name).FontSize(13).TextColor(pal.textMuted).SingleLine()
+			}
 		})
-		ui.Row(c).Gap(5).Shrink(0).Children(func() { a.badges(c, pal, r, false) })
+		ui.Row(c).Gap(8).Shrink(0).Children(func() { a.badges(c, pal, r, false) })
 	})
 }
 
@@ -450,15 +636,11 @@ func (a *App) previewHeader(c *ui.Context, pal *palette, r row) {
 // icon and why, never a blank.
 func (a *App) fallbackCard(c *ui.Context, pal *palette, r row) {
 	reason := a.noPreviewReason(r)
-	ui.Column(c).Center().Gap(14).Padding(32).MaxWidth(440).Children(func() {
-		a.appIconView(c, pal, r.path, 112)
-		title := r.win.Title
-		if title == "" || r.kind == rowApp {
-			title = r.name
-		}
-		ui.Text(c, title).FontSize(16).FontWeight(600).TextColor(pal.text).TextAlign(ui.Center).MaxLines(3).Ellipsis("…")
+	ui.Column(c).AlignItems(ui.Center).Gap(8).Padding(24).MaxWidth(400).Children(func() {
+		a.appIconView(c, pal, r.path, 96)
+		ui.Text(c, rowTitle(r)).FontSize(16).FontWeight(500).TextColor(pal.text).TextAlign(ui.Center).MaxLines(2).Ellipsis("…").Margin(16, 0, 0, 0)
 		if reason != "" {
-			ui.Text(c, reason).FontSize(13).TextColor(pal.textMuted).TextAlign(ui.Center)
+			ui.Text(c, reason).FontSize(14).TextColor(pal.textMuted).TextAlign(ui.Center)
 		}
 	})
 }

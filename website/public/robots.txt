@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://windeck.islumi.com/sitemap.xml

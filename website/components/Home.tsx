@@ -1,17 +1,16 @@
 import { For } from 'solid-js';
-import { BUY_URL, DOWNLOAD_URL, content, type Lang } from '../lib/content';
+import { DOWNLOAD_URL, content, type Lang } from '../lib/content';
+import Icon, { icons } from './Icon';
 import SwitcherDemo from './SwitcherDemo';
 import SiteHeader from './SiteHeader';
 import SiteFooter from './SiteFooter';
 
-const featureIcons = [
-  'M3 5h10M3 8h7M3 11h9',
-  'M2.5 3.5h11v9h-11zM2.5 6h11',
-  'M3 3h4v4H3zM9 3h4v4H9zM3 9h4v4H3zM9 9h4v4H9z',
-  'M8 2v12M2 8h12',
-  'M4 4l8 8M12 4l-8 8',
-  'M9 2 4 9h4l-1 5 5-7H8z',
-];
+// The page, as the hz landing pages go: the nav, the first screen with its
+// one big bubble and the product on a gray block, three cards, text and
+// pictures taking turns, facts, the price, questions, the dark ending and
+// the footer. Its one action is downloading.
+
+const featureIcons = [icons.list, icons.image, icons.layers, icons.pin, icons.keyboard, icons.feather];
 
 export default function Home(props: { lang: Lang }) {
   const t = content[props.lang];
@@ -21,62 +20,90 @@ export default function Home(props: { lang: Lang }) {
       <main>
         <section class="hero wrap">
           <p class="eyebrow">{t.hero.eyebrow}</p>
-          <h1 class="display">
-            {t.hero.title[0]}
-            <br />
-            <span class="muted">{t.hero.title[1]}</span>
-          </h1>
+          <h1 class="bubble display">{t.hero.title}</h1>
           <p class="lead">{t.hero.lead}</p>
           <div class="actions">
-            <a class="button button--primary" href={DOWNLOAD_URL}>
-              <svg viewBox="0 0 16 16" width="15" height="15" fill="currentColor" aria-hidden="true">
-                <path d="M11.2 8.5c0-1.6 1.3-2.4 1.4-2.4-.8-1.1-2-1.3-2.4-1.3-1-.1-2 .6-2.5.6s-1.3-.6-2.2-.6C4.4 4.8 3 5.8 3 7.9c0 1.3.5 2.7 1.1 3.6.5.8 1 1.5 1.7 1.5.7 0 1-.4 1.8-.4s1.1.4 1.8.4c.8 0 1.2-.7 1.7-1.5.5-.7.7-1.4.7-1.5 0 0-1.6-.6-1.6-2.5zM9.6 3.6c.4-.5.7-1.1.6-1.8-.6 0-1.3.4-1.7.9-.4.4-.7 1.1-.6 1.7.7.1 1.3-.3 1.7-.8z" />
-              </svg>
+            <a class="button button--primary button--large" href={DOWNLOAD_URL}>
+              <Icon d={icons.download} size={20} />
               {t.hero.download}
             </a>
-            <code class="brew">{t.hero.brew}</code>
+            <a class="button button--large" href="#how">
+              {t.hero.how}
+            </a>
           </div>
           <p class="note">{t.hero.note}</p>
-          <SwitcherDemo t={t} />
         </section>
+        <div class="wrap">
+          <div class="showcase">
+            <SwitcherDemo t={t} />
+          </div>
+        </div>
 
-        <section class="wrap steps">
-          <For each={t.steps}>
-            {(s) => (
-              <div class="step">
-                <div class="step__keys">
-                  <For each={s.keys}>{(k) => <kbd class="key key--small">{k}</kbd>}</For>
-                </div>
-                <h3>{s.title}</h3>
-                <p>{s.body}</p>
-              </div>
-            )}
-          </For>
-        </section>
-
-        <section id="features" class="wrap section">
-          <h2 class="title">{t.featuresTitle}</h2>
-          <p class="section-lead">{t.featuresLead}</p>
-          <div class="grid">
-            <For each={t.features}>
-              {(f, i) => (
+        <section id="how" class="wrap section">
+          <h2 class="h2">{t.stepsTitle}</h2>
+          <div class="cards">
+            <For each={t.steps}>
+              {(s) => (
                 <article class="card">
-                  <span class="card__icon">
-                    <svg viewBox="0 0 16 16" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                      <path d={featureIcons[i()]} />
-                    </svg>
-                  </span>
-                  <h3>{f.title}</h3>
-                  <p>{f.body}</p>
+                  <div class="card__keys">
+                    <For each={s.keys}>{(k) => <kbd class="key">{k}</kbd>}</For>
+                  </div>
+                  <h3 class="h3">{s.title}</h3>
+                  <p>{s.body}</p>
                 </article>
               )}
             </For>
           </div>
         </section>
 
-        <section id="smart" class="wrap section split">
-          <div>
-            <h2 class="title">{t.smart.title}</h2>
+        <section id="features" class="wrap section split">
+          <div class="split__text">
+            <h2 class="h2">{t.featuresTitle}</h2>
+            <p class="section-lead">{t.featuresLead}</p>
+            <ul class="features">
+              <For each={t.features}>
+                {(f, i) => (
+                  <li>
+                    <span class="features__icon">
+                      <Icon d={featureIcons[i()]} size={20} />
+                    </span>
+                    <div>
+                      <strong>{f.title}</strong>
+                      <p>{f.body}</p>
+                    </div>
+                  </li>
+                )}
+              </For>
+            </ul>
+          </div>
+          <div class="split__art" aria-hidden="true">
+            <div class="badges">
+              <For
+                each={[
+                  { title: t.demo.minimized, icon: icons.minimized },
+                  { title: t.demo.desktop, icon: icons.desktop },
+                  { title: props.lang === 'zh' ? '外接显示器' : 'External display', icon: icons.monitor },
+                  { title: props.lang === 'zh' ? '已隐藏' : 'Hidden', icon: icons.eyeOff },
+                ]}
+              >
+                {(b, i) => (
+                  <div class="badges__row" classList={{ 'is-sel': i() === 1 }}>
+                    <span class="badges__app" />
+                    <span class="badges__line" style={{ width: `${[62, 48, 70, 54][i()]}%` }} />
+                    <span class="tag tag--gray">
+                      <Icon d={b.icon} size={14} />
+                      {b.title}
+                    </span>
+                  </div>
+                )}
+              </For>
+            </div>
+          </div>
+        </section>
+
+        <section id="smart" class="wrap section split split--flip">
+          <div class="split__text">
+            <h2 class="h2">{t.smart.title}</h2>
             <p class="section-lead">{t.smart.lead}</p>
             <ul class="points">
               <For each={t.smart.points}>
@@ -89,34 +116,69 @@ export default function Home(props: { lang: Lang }) {
               </For>
             </ul>
           </div>
-          <div class="cycle" aria-hidden="true">
-            <For each={t.smart.cycle}>
-              {(c, i) => (
-                <div class="cycle__item" classList={{ 'is-first': i() === 0, 'is-pred': i() === 1 }}>
-                  <span class="cycle__num">{i() + 1}</span>
-                  <span>{c}</span>
-                  {i() === 0 && <span class="cycle__lock">⇥</span>}
-                  {i() === 1 && <span class="cycle__star">★</span>}
-                </div>
-              )}
-            </For>
+          <div class="split__art" aria-hidden="true">
+            <div class="cycle">
+              <For each={t.smart.cycle}>
+                {(c, i) => (
+                  <div class="cycle__item" classList={{ 'is-first': i() === 0 }}>
+                    <span class="cycle__num">{i() + 1}</span>
+                    <span class="cycle__label">{c}</span>
+                    {i() === 0 && <kbd class="key key--small">⇥</kbd>}
+                    {i() === 1 && (
+                      <span class="cycle__star">
+                        <Icon d={icons.star} size={16} fill />
+                      </span>
+                    )}
+                  </div>
+                )}
+              </For>
+            </div>
           </div>
         </section>
 
-        <section id="privacy" class="wrap section privacy">
-          <h2 class="title">{t.privacy.title}</h2>
-          <p class="section-lead">{t.privacy.lead}</p>
-          <ul class="checks">
-            <For each={t.privacy.points}>{(p) => <li>{p}</li>}</For>
-          </ul>
+        <section id="privacy" class="wrap section split">
+          <div class="split__text">
+            <h2 class="h2">{t.privacy.title}</h2>
+            <p class="section-lead">{t.privacy.lead}</p>
+            <ul class="checks">
+              <For each={t.privacy.points}>
+                {(p) => (
+                  <li>
+                    <Icon d={icons.check} size={20} />
+                    <span>{p}</span>
+                  </li>
+                )}
+              </For>
+            </ul>
+          </div>
+          <div class="split__art" aria-hidden="true">
+            <div class="privacy-list">
+              <p class="privacy-list__title">
+                <Icon d={icons.shieldCheck} size={20} />
+                {t.privacy.listTitle}
+              </p>
+              <For each={t.privacy.list}>
+                {(name) => (
+                  <div class="privacy-list__row">
+                    <span class="badges__app" />
+                    <span>{name}</span>
+                    <span class="tag tag--gray">
+                      <Icon d={icons.eyeOff} size={14} />
+                      {t.privacy.never}
+                    </span>
+                  </div>
+                )}
+              </For>
+            </div>
+          </div>
         </section>
 
         <section class="wrap section">
-          <h2 class="title center">{t.perf.title}</h2>
-          <div class="stats">
-            <For each={t.perf.items}>
+          <h2 class="h2">{t.facts.title}</h2>
+          <div class="facts">
+            <For each={t.facts.items}>
               {(s) => (
-                <div class="stat">
+                <div class="fact">
                   <strong>{s.value}</strong>
                   <span>{s.label}</span>
                 </div>
@@ -126,23 +188,33 @@ export default function Home(props: { lang: Lang }) {
         </section>
 
         <section id="pricing" class="wrap section">
-          <h2 class="title center">{t.pricing.title}</h2>
-          <p class="section-lead center">{t.pricing.lead}</p>
+          <h2 class="h2">{t.pricing.title}</h2>
+          <p class="section-lead">{t.pricing.lead}</p>
           <div class="plans">
             <For each={[t.pricing.free, t.pricing.pro]}>
               {(p, i) => (
-                <div class="plan" classList={{ 'plan--pro': i() === 1 }}>
-                  <h3>{p.name}</h3>
+                <div class="plan">
+                  <div class="plan__head">
+                    <h3 class="h3">{p.name}</h3>
+                    {i() === 1 && <span class="tag">14 {props.lang === 'zh' ? '天试用' : '-day trial'}</span>}
+                  </div>
                   <p class="plan__price">
                     {p.price} <span>{p.note}</span>
                   </p>
-                  <ul class="checks">
-                    <For each={p.items}>{(it) => <li>{it}</li>}</For>
+                  <ul class="checks checks--small">
+                    <For each={p.items}>
+                      {(it) => (
+                        <li>
+                          <Icon d={icons.check} size={16} />
+                          <span>{it}</span>
+                        </li>
+                      )}
+                    </For>
                   </ul>
                   {i() === 1 ? (
-                    <a class="button button--primary" href={BUY_URL}>
+                    <span class="button button--disabled" aria-disabled="true">
                       {t.pricing.buy}
-                    </a>
+                    </span>
                   ) : (
                     <a class="button" href={DOWNLOAD_URL}>
                       {t.nav.download}
@@ -152,27 +224,34 @@ export default function Home(props: { lang: Lang }) {
               )}
             </For>
           </div>
-          <p class="note center">{t.pricing.early}</p>
+          <p class="note">{t.pricing.early}</p>
         </section>
 
         <section id="faq" class="wrap section faq">
-          <h2 class="title center">FAQ</h2>
+          <h2 class="h2">{t.faqTitle}</h2>
           <For each={t.faq}>
             {(f) => (
               <details>
-                <summary>{f.q}</summary>
+                <summary>
+                  {f.q}
+                  <Icon d={icons.chevronDown} size={20} />
+                </summary>
                 <p>{f.a}</p>
               </details>
             )}
           </For>
         </section>
 
-        <section class="wrap cta">
-          <img src="/icon.png" width="88" height="88" alt="" />
-          <h2 class="title">{t.cta.title}</h2>
-          <a class="button button--primary" href={DOWNLOAD_URL}>
-            {t.cta.button}
-          </a>
+        <section class="ending">
+          <div class="wrap ending__inner">
+            <img src="/icon.png" width="72" height="72" alt="" />
+            <h2 class="h2">{t.cta.title}</h2>
+            <p>{t.cta.lead}</p>
+            <a class="button button--primary button--large" href={DOWNLOAD_URL}>
+              <Icon d={icons.download} size={20} />
+              {t.cta.button}
+            </a>
+          </div>
         </section>
       </main>
       <SiteFooter t={t} />

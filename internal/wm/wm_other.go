@@ -9,6 +9,9 @@ func FrontmostPID() int32                                 { return 0 }
 func ActivateApp(pid int32)                               {}
 func QuitApp(pid int32)                                   {}
 func HideApp(pid int32)                                   {}
+func RoundWindow(handle uintptr, radius float64)          {}
+func NoWindowAnimation(handle uintptr)                    {}
+func InstalledApp(bundleID string) (string, string, bool) { return "", "", false }
 func Windows() []Window                                   { return nil }
 func StackingOrder() []WindowID                           { return nil }
 func Focus(w Window)                                      {}
