@@ -34,7 +34,7 @@ export function seoHead(lang: Lang) {
     alternateName: '窗签',
     applicationCategory: 'UtilitiesApplication',
     operatingSystem: 'macOS 13 or later',
-    softwareVersion: '1.1.0',
+    softwareVersion: '1.1.1',
     description: w.description,
     url,
     downloadUrl: DOWNLOAD_URL,
