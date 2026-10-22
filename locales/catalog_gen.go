@@ -874,6 +874,22 @@ func (msgs Messages) PermScreenWhy() string {
 	return Catalog.Format(msgs.locale, "permScreenWhy", nil)
 }
 
+// PermStaleNote says "Allowed already, and still asked? An update can leave the old Windeck switched on. Choose Allow…: Windeck clears th…"
+// in the language the app shows.
+//
+// Under the permission cards in onboarding, while Accessibility is not
+// allowed.
+func PermStaleNote() string { return In(i18n.Locale()).PermStaleNote() }
+
+// PermStaleNote says "Allowed already, and still asked? An update can leave the old Windeck switched on. Choose Allow…: Windeck clears th…"
+// in the language of msgs.
+//
+// Under the permission cards in onboarding, while Accessibility is not
+// allowed.
+func (msgs Messages) PermStaleNote() string {
+	return Catalog.Format(msgs.locale, "permStaleNote", nil)
+}
+
 // PredictedTip says "Predicted from your habits"
 // in the language the app shows.
 func PredictedTip() string { return In(i18n.Locale()).PredictedTip() }

@@ -1,7 +1,7 @@
 {
   "name": "Windeck",
   "identifier": "app.windeck",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "copyright": "Copyright © 2026 Windeck",
   "out": "build",
   "i18n": {
@@ -10,6 +10,7 @@
   },
   "macos": {
     "minimumSystemVersion": "13.0",
+    "signingIdentity": "Windeck Self-Signed",
     "infoPlist": {
       "LSUIElement": true,
       "CFBundleDisplayName": "Windeck",

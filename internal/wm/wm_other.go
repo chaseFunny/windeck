@@ -4,6 +4,7 @@ package wm
 
 func Trusted(prompt bool) bool                            { return false }
 func CanCapture(prompt bool) bool                         { return false }
+func ResetPermission(service string)                      {}
 func RunningApps() []App                                  { return nil }
 func FrontmostPID() int32                                 { return 0 }
 func ActivateApp(pid int32)                               {}

@@ -130,3 +130,9 @@ type Display struct {
 // ErrNotTrusted is the event tap failing for want of the accessibility
 // permission.
 var ErrNotTrusted = errors.New("windeck: the accessibility permission is needed")
+
+// Permission services, as tccutil names them.
+const (
+	ServiceAccessibility = "Accessibility"
+	ServiceScreen        = "ScreenCapture"
+)

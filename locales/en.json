@@ -200,6 +200,10 @@
   "permScreenDetail": "Shows windows' pictures in the preview.",
   "permScreenRestart": "macOS applies Screen Recording once Windeck restarts.",
   "permScreenWhy": "Shows large previews of your windows. Without it, Windeck shows titles only.",
+  "permStaleNote": "Allowed already, and still asked? An update can leave the old Windeck switched on. Choose Allow…: Windeck clears the old entry, then turn Windeck on again.",
+  "@permStaleNote": {
+    "description": "Under the permission cards in onboarding, while Accessibility is not allowed."
+  },
   "predictedTip": "Predicted from your habits",
   "previewApp": "Running, with no windows open. Switching brings it forward.",
   "previewExcluded": "On your privacy list: Windeck never captures this app.",

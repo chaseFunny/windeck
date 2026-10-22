@@ -107,6 +107,9 @@ func (a *App) onboardingView(c *ui.Context) {
 						a.permissionCard(c, pal, accessIcon, locales.PermAccessibility(), locales.PermAccessibilityWhy(), true, a.trusted, urlAccessibility)
 						a.permissionCard(c, pal, screenIcon, locales.PermScreen(), locales.PermScreenWhy(), false, a.canCapture, urlScreen)
 					})
+					if !a.trusted {
+						ui.Text(c, locales.PermStaleNote()).FontSize(13).TextColor(pal.textMuted).AlignSelf(ui.Center).TextAlign(ui.Center).MaxWidth(520)
+					}
 					if a.ob.captureAsked && !a.canCapture {
 						ui.Row(c).Gap(12).Padding(12, 16).Radius(radiusCtl).Background(pal.brandSubtle).AlignItems(ui.Center).Children(func() {
 							ui.Icon(c, infoIcon).Size(20, 20).TextColor(pal.brandText)
@@ -169,6 +172,21 @@ func (a *App) finishOnboarding() {
 	}
 }
 
+// askPermission clears what macOS kept of an earlier build's grant, then
+// asks again and opens the System Settings pane: the list then holds one
+// Windeck, and the switch the user turns on is this build's.
+func (a *App) askPermission(accessibility bool, url string) {
+	if accessibility {
+		wm.ResetPermission(wm.ServiceAccessibility)
+		wm.Trusted(true)
+	} else {
+		wm.ResetPermission(wm.ServiceScreen)
+		wm.CanCapture(true)
+	}
+	mygo.Shell.OpenExternal(url)
+	a.watchPermissions()
+}
+
 // permissionCard is a permission's row: what it is for, and its button,
 // or the check once it is allowed.
 func (a *App) permissionCard(c *ui.Context, pal *palette, svg *ui.SVG, title, why string, required, granted bool, url string) {
@@ -198,13 +216,10 @@ func (a *App) permissionCard(c *ui.Context, pal *palette, svg *ui.SVG, title, wh
 			b = ui.Button(c.Key("open"), locales.PermAllow()).Height(36)
 		}
 		b.OnClick(func() {
-			if required {
-				wm.Trusted(true)
-			} else {
+			if !required {
 				a.ob.captureAsked = true
-				wm.CanCapture(true)
 			}
-			mygo.Shell.OpenExternal(url)
+			a.askPermission(required, url)
 		})
 	})
 }

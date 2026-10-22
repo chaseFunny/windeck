@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.1
+
+- Permissions survive updates: Windeck is now signed with its own certificate, the same for every version, so macOS knows an update as the app it allowed. Updating from 1.1.0 or earlier asks for Accessibility once more; after that, never again.
+- Allowed already, and still asked? Allow… now clears the entry an earlier version left in System Settings before asking, so the list holds one Windeck and its switch is this version's.
+
 ## 1.1.0
 
 - Updates: Windeck checks its releases once a day and from the menu bar's "Check for Updates…", shows what is new and installs the signed update, then relaunches; or, chosen in Settings → About, installs it without asking for the next launch. Updates are signed, and only those signed with Windeck's key are installed.

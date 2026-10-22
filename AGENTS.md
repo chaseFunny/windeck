@@ -11,6 +11,7 @@ Windeck is a macOS window switcher built with MyGo (pure Go, native UI). Read do
 - Updates go through `mygo.Updater` and Windeck's own window (`updates.go`), never the updater plugin's, whose look is not the design's.
 - Window titles, pictures and app lists never leave the Mac.
 - The look is the hz design system's (docs/architecture.md, "The look"): colors from `theme.go`'s palette, never values of their own; corners, spacing and type from its steps; one primary button a screen.
+- Every release is signed with the "Windeck Self-Signed" certificate (mygo.json `macos.signingIdentity`), never ad hoc: macOS keeps the permissions of an app whose signature it knows, and forgets them at each ad-hoc build. The certificate and its key are in `~/Library/Application Support/mygo/signing`, outside the repository; import `windeck.p12` into the login keychain on a new Mac. Replacing the certificate makes every user allow Windeck again.
 - Strings live in `locales/en.json` and `locales/zh-Hans.json`; run `go tool mygo generate` after changing them.
 
 ## Commands

@@ -634,15 +634,7 @@ func (a *App) permissionRow(c *ui.Context, pal *palette, label, detail string, g
 			statusDot(c, pal, locales.PermGranted())
 			return
 		}
-		ui.Button(c.Key(url), locales.PermOpen()).OnClick(func() {
-			if accessibility {
-				wm.Trusted(true)
-			} else {
-				wm.CanCapture(true)
-			}
-			mygo.Shell.OpenExternal(url)
-			a.watchPermissions()
-		})
+		ui.Button(c.Key(url), locales.PermOpen()).OnClick(func() { a.askPermission(accessibility, url) })
 	})
 }
 
