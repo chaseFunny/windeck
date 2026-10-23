@@ -3,6 +3,7 @@
 ## 1.1.2
 
 - Fixed: holding W a moment too long closed every window of the app, one after the other, as the key repeated and the highlight went on to the next; and Q held quit app after app. W, M and Q now act once a press.
+- The panel's hints say what W and Q act on: "Close window" and "Quit app".
 
 ## 1.1.1
 

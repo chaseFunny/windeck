@@ -240,13 +240,13 @@ func (msgs Messages) HintClear() string {
 	return Catalog.Format(msgs.locale, "hintClear", nil)
 }
 
-// HintClose says "Close"
+// HintClose says "Close window"
 // in the language the app shows.
 //
 // The key hint of W.
 func HintClose() string { return In(i18n.Locale()).HintClose() }
 
-// HintClose says "Close"
+// HintClose says "Close window"
 // in the language of msgs.
 //
 // The key hint of W.
@@ -296,13 +296,13 @@ func (msgs Messages) HintNext() string {
 	return Catalog.Format(msgs.locale, "hintNext", nil)
 }
 
-// HintQuit says "Quit"
+// HintQuit says "Quit app"
 // in the language the app shows.
 //
 // The key hint of Q.
 func HintQuit() string { return In(i18n.Locale()).HintQuit() }
 
-// HintQuit says "Quit"
+// HintQuit says "Quit app"
 // in the language of msgs.
 //
 // The key hint of Q.

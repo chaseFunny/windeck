@@ -290,11 +290,14 @@ func (a *App) hintsView(c *ui.Context, pal *palette) {
 			hint("esc", locales.HintClear())
 			return
 		}
-		hint("⇥", locales.HintNext())
 		if !a.set.ActionKeys {
+			hint("⇥", locales.HintNext())
 			hint("/", locales.ShortcutsSearch())
 			return
 		}
+		// The keys that act, named for what they act on: W a window, Q
+		// its whole app. Tab, which everyone holding it knows, gives
+		// them its room.
 		hint("W", locales.HintClose())
 		hint("M", locales.HintMinimize())
 		hint("Q", locales.HintQuit())

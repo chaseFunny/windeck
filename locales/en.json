@@ -69,7 +69,7 @@
   "@hintClear": {
     "description": "The key hint of Escape while searching."
   },
-  "hintClose": "Close",
+  "hintClose": "Close window",
   "@hintClose": {
     "description": "The key hint of W."
   },
@@ -85,7 +85,7 @@
   "@hintNext": {
     "description": "The key hint of Tab."
   },
-  "hintQuit": "Quit",
+  "hintQuit": "Quit app",
   "@hintQuit": {
     "description": "The key hint of Q."
   },
