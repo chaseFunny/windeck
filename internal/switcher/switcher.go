@@ -256,6 +256,12 @@ func (s *Switcher) Key(e wm.KeyEvent) (Action, bool) {
 		}
 		return a
 	}
+	if e.Repeat && (e.Key == wm.KeyW || e.Key == wm.KeyM || e.Key == wm.KeyQ) {
+		// A held key repeats, and the highlight goes on to the next window
+		// after each: W held would close the app's windows one after the
+		// other, Q quit app after app. One press, one act.
+		return Action{}, true
+	}
 	switch e.Key {
 	case wm.KeyTab:
 		return s.tab(e.Shift), true

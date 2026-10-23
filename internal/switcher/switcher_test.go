@@ -141,6 +141,30 @@ func TestActionsKeepThePanel(t *testing.T) {
 	}
 }
 
+// A held W repeats: only its first press closes, or the highlight, gone on
+// to the next window, would be closed too, and the app's windows after it.
+func TestHeldActionKeysActOnce(t *testing.T) {
+	s := open(t)
+	s.Timer(true)
+	if a := key(s, wm.KeyW); a.Kind != CloseWindow || a.Window != 2 {
+		t.Fatalf("w: %+v", a)
+	}
+	s.Removed(2)
+	for _, k := range []wm.Key{wm.KeyW, wm.KeyM, wm.KeyQ} {
+		a, keep := s.Key(wm.KeyEvent{Key: k, Repeat: true, Mod: true})
+		if a.Kind != None || !keep {
+			t.Fatalf("repeated %v: %+v, kept %v", k, a, keep)
+		}
+	}
+	if s.Selected() != 3 || s.Phase() != Browsing {
+		t.Fatalf("after the repeats: selected %d, phase %v", s.Selected(), s.Phase())
+	}
+	// Tab held still goes on.
+	if a, _ := s.Key(wm.KeyEvent{Key: wm.KeyTab, Repeat: true, Mod: true}); s.Selected() == 3 {
+		t.Fatalf("held tab did not move: %+v", a)
+	}
+}
+
 func TestSearchState(t *testing.T) {
 	s := open(t)
 	a := key(s, wm.KeySpace)

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.2
+
+- Fixed: holding W a moment too long closed every window of the app, one after the other, as the key repeated and the highlight went on to the next; and Q held quit app after app. W, M and Q now act once a press.
+
 ## 1.1.1
 
 - Permissions survive updates: Windeck is now signed with its own certificate, the same for every version, so macOS knows an update as the app it allowed. Updating from 1.1.0 or earlier asks for Accessibility once more; after that, never again.
