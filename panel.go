@@ -44,7 +44,7 @@ const (
 	listRowHeight = 48
 	listPad       = 8
 	searchBlock   = 12 + 36 + 8 // the search field with its margins
-	guideHeight   = 560         // the list panel's, under the guide
+	guideHeight   = 640         // the list panel's, under the guide
 )
 
 // The design's motion: 120 ms for hover, easing out.

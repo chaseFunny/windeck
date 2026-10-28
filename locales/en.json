@@ -69,10 +69,6 @@
   "@commonOK": {
     "description": "A button closing a message."
   },
-  "guideActions": "Close window · Minimize · Quit app",
-  "@guideActions": {
-    "description": "The guide: W, M and Q."
-  },
   "guideClose": "Close the panel",
   "@guideClose": {
     "description": "The guide: Escape or the shortcut again."
@@ -80,6 +76,14 @@
   "guideDetail": "Windeck waits in the menu bar. Try these now:",
   "@guideDetail": {
     "description": "Under the guide's title."
+  },
+  "guideInPanel": "In the panel",
+  "@guideInPanel": {
+    "description": "The guide's second group of keys."
+  },
+  "guideLetGo": "Release",
+  "@guideLetGo": {
+    "description": "Before a key in the guide: letting it go."
   },
   "guideNote": "Change the shortcut in Settings → Shortcuts.",
   "@guideNote": {
@@ -89,11 +93,11 @@
   "@guideOpen": {
     "description": "The guide: what the shortcut does."
   },
-  "guideQuick": "A quick press goes back to the last window",
+  "guideQuick": "Back to the last window",
   "@guideQuick": {
     "description": "The guide: a quick press of the shortcut."
   },
-  "guideRelease": "Let go to switch to the highlighted window",
+  "guideRelease": "Switch to the highlighted window",
   "@guideRelease": {
     "description": "The guide: releasing the modifier."
   },
@@ -104,6 +108,14 @@
   "guideStart": "Start Using Windeck",
   "@guideStart": {
     "description": "The guide's button, which hides it."
+  },
+  "guideSwitching": "Switching",
+  "@guideSwitching": {
+    "description": "The guide's first group of keys."
+  },
+  "guideTap": "Tap",
+  "@guideTap": {
+    "description": "Before keys in the guide: a quick press and release."
   },
   "guideTitle": "Here is how Windeck works",
   "@guideTitle": {

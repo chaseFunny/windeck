@@ -240,20 +240,6 @@ func (msgs Messages) CommonOK() string {
 	return Catalog.Format(msgs.locale, "commonOK", nil)
 }
 
-// GuideActions says "Close window · Minimize · Quit app"
-// in the language the app shows.
-//
-// The guide: W, M and Q.
-func GuideActions() string { return In(i18n.Locale()).GuideActions() }
-
-// GuideActions says "Close window · Minimize · Quit app"
-// in the language of msgs.
-//
-// The guide: W, M and Q.
-func (msgs Messages) GuideActions() string {
-	return Catalog.Format(msgs.locale, "guideActions", nil)
-}
-
 // GuideClose says "Close the panel"
 // in the language the app shows.
 //
@@ -280,6 +266,34 @@ func GuideDetail() string { return In(i18n.Locale()).GuideDetail() }
 // Under the guide's title.
 func (msgs Messages) GuideDetail() string {
 	return Catalog.Format(msgs.locale, "guideDetail", nil)
+}
+
+// GuideInPanel says "In the panel"
+// in the language the app shows.
+//
+// The guide's second group of keys.
+func GuideInPanel() string { return In(i18n.Locale()).GuideInPanel() }
+
+// GuideInPanel says "In the panel"
+// in the language of msgs.
+//
+// The guide's second group of keys.
+func (msgs Messages) GuideInPanel() string {
+	return Catalog.Format(msgs.locale, "guideInPanel", nil)
+}
+
+// GuideLetGo says "Release"
+// in the language the app shows.
+//
+// Before a key in the guide: letting it go.
+func GuideLetGo() string { return In(i18n.Locale()).GuideLetGo() }
+
+// GuideLetGo says "Release"
+// in the language of msgs.
+//
+// Before a key in the guide: letting it go.
+func (msgs Messages) GuideLetGo() string {
+	return Catalog.Format(msgs.locale, "guideLetGo", nil)
 }
 
 // GuideNote says "Change the shortcut in Settings → Shortcuts."
@@ -310,13 +324,13 @@ func (msgs Messages) GuideOpen() string {
 	return Catalog.Format(msgs.locale, "guideOpen", nil)
 }
 
-// GuideQuick says "A quick press goes back to the last window"
+// GuideQuick says "Back to the last window"
 // in the language the app shows.
 //
 // The guide: a quick press of the shortcut.
 func GuideQuick() string { return In(i18n.Locale()).GuideQuick() }
 
-// GuideQuick says "A quick press goes back to the last window"
+// GuideQuick says "Back to the last window"
 // in the language of msgs.
 //
 // The guide: a quick press of the shortcut.
@@ -324,13 +338,13 @@ func (msgs Messages) GuideQuick() string {
 	return Catalog.Format(msgs.locale, "guideQuick", nil)
 }
 
-// GuideRelease says "Let go to switch to the highlighted window"
+// GuideRelease says "Switch to the highlighted window"
 // in the language the app shows.
 //
 // The guide: releasing the modifier.
 func GuideRelease() string { return In(i18n.Locale()).GuideRelease() }
 
-// GuideRelease says "Let go to switch to the highlighted window"
+// GuideRelease says "Switch to the highlighted window"
 // in the language of msgs.
 //
 // The guide: releasing the modifier.
@@ -364,6 +378,34 @@ func GuideStart() string { return In(i18n.Locale()).GuideStart() }
 // The guide's button, which hides it.
 func (msgs Messages) GuideStart() string {
 	return Catalog.Format(msgs.locale, "guideStart", nil)
+}
+
+// GuideSwitching says "Switching"
+// in the language the app shows.
+//
+// The guide's first group of keys.
+func GuideSwitching() string { return In(i18n.Locale()).GuideSwitching() }
+
+// GuideSwitching says "Switching"
+// in the language of msgs.
+//
+// The guide's first group of keys.
+func (msgs Messages) GuideSwitching() string {
+	return Catalog.Format(msgs.locale, "guideSwitching", nil)
+}
+
+// GuideTap says "Tap"
+// in the language the app shows.
+//
+// Before keys in the guide: a quick press and release.
+func GuideTap() string { return In(i18n.Locale()).GuideTap() }
+
+// GuideTap says "Tap"
+// in the language of msgs.
+//
+// Before keys in the guide: a quick press and release.
+func (msgs Messages) GuideTap() string {
+	return Catalog.Format(msgs.locale, "guideTap", nil)
 }
 
 // GuideTitle says "Here is how Windeck works"
