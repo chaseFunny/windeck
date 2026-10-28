@@ -270,6 +270,16 @@ func Minimize(id WindowID) bool {
 	return axSetBool(el, "AXMinimized", true)
 }
 
+// Unminimize brings a window back from the Dock, where it was.
+func Unminimize(id WindowID) bool {
+	el := element(id)
+	if el == 0 {
+		return false
+	}
+	defer release(el)
+	return axSetBool(el, "AXMinimized", false)
+}
+
 // FocusedWindow returns the window the user is in: the focused window of
 // the frontmost app.
 func FocusedWindow() WindowID {

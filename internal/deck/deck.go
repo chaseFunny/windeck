@@ -85,7 +85,8 @@ func (d *Deck) SeedHistory(order []wm.WindowID) {
 }
 
 // Update replaces the windows with those listed now: new ones join the
-// end of their app's group, and gone ones leave the history.
+// end of their app's group, and gone ones leave the history; one that
+// comes back takes its place again.
 func (d *Deck) Update(ws []wm.Window) {
 	live := make(map[wm.WindowID]wm.Window, len(ws))
 	for _, w := range ws {
@@ -99,11 +100,10 @@ func (d *Deck) Update(ws []wm.Window) {
 			d.next++
 		}
 	}
-	for id := range d.winSeq {
-		if _, ok := live[id]; !ok {
-			delete(d.winSeq, id)
-		}
-	}
+	// A window's place outlives it in the listing: one the listing misses
+	// for a moment, as it goes to the Dock, comes back where it was, not
+	// at its group's end. Window numbers are never used again, and a
+	// place is one int.
 	d.windows = live
 	d.mru = slices.DeleteFunc(d.mru, func(id wm.WindowID) bool { _, ok := live[id]; return !ok })
 	// Windows never used go after those that were, in the list's order.

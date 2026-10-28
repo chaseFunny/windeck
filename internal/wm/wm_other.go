@@ -12,12 +12,14 @@ func QuitApp(pid int32)                                   {}
 func HideApp(pid int32)                                   {}
 func RoundWindow(handle uintptr, radius float64)          {}
 func NoWindowAnimation(handle uintptr)                    {}
+func TrackPointerAlways(handle uintptr)                   {}
 func InstalledApp(bundleID string) (string, string, bool) { return "", "", false }
 func Windows() []Window                                   { return nil }
 func StackingOrder() []WindowID                           { return nil }
 func Focus(w Window)                                      {}
 func Close(id WindowID) bool                              { return false }
 func Minimize(id WindowID) bool                           { return false }
+func Unminimize(id WindowID) bool                         { return false }
 func FocusedWindow() WindowID                             { return 0 }
 func CaptureWindow(id WindowID, maxSide int) Capture      { return nil }
 func SetSystemSwitcher(on bool)                           {}

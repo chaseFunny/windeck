@@ -170,6 +170,8 @@ func (a *App) finishOnboarding() {
 	if a.onboardWin != nil {
 		a.onboardWin.Close()
 	}
+	// Then the switcher, as it shows, with its keys over it.
+	a.showGuide()
 }
 
 // askPermission clears what macOS kept of an earlier build's grant, then

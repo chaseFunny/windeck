@@ -38,6 +38,12 @@ func (a *App) key(e wm.KeyEvent) bool {
 		}
 		return a.open(e.Shift)
 	}
+	if a.sw.Phase() == switcher.Searching && e.Key == wm.KeyTab && e.Mod && !e.Released {
+		// The panel pinned open, by search or the guide: the shortcut
+		// that opened it closes it.
+		a.do(a.sw.Dismiss())
+		return true
+	}
 	if !a.set.ActionKeys && (e.Key == wm.KeyW || e.Key == wm.KeyM || e.Key == wm.KeyQ) && !e.Released {
 		// Turned off in Settings: kept from the app behind, and nothing.
 		return a.sw.Phase() != switcher.Searching
@@ -198,6 +204,7 @@ func (a *App) closeWindow(id wm.WindowID) {
 		return
 	}
 	go wm.Close(id)
+	a.hold(id, held{gone: true})
 	a.deck.Remove(id)
 	a.pool.Remove(uint32(id))
 	a.sw.Removed(id)
@@ -207,7 +214,12 @@ func (a *App) closeWindow(id wm.WindowID) {
 
 func (a *App) minimizeWindow(id wm.WindowID) {
 	w, ok := a.deck.Window(id)
-	if !ok || w.Minimized {
+	if !ok {
+		return
+	}
+	if w.Minimized {
+		// M again, on one in the Dock: back.
+		a.restoreWindow(id)
 		return
 	}
 	// Its last picture first: once in the Dock it cannot be captured.
@@ -220,10 +232,33 @@ func (a *App) minimizeWindow(id wm.WindowID) {
 		}
 		wm.Minimize(id)
 	}()
+	// The row stays where it is, and the highlight on it: only its badge
+	// changes. What the listings say while the window flies to the Dock
+	// does not move it.
+	a.hold(id, held{minimized: true})
 	a.deck.Patch(id, func(w *wm.Window) { w.Minimized = true })
-	a.sw.Next()
 	a.rebuildRows()
-	a.refresh.soon(a)
+}
+
+// restoreWindow brings a minimized window back from the Dock, the panel
+// staying.
+func (a *App) restoreWindow(id wm.WindowID) {
+	w, ok := a.deck.Window(id)
+	if !ok || !w.Minimized {
+		return
+	}
+	go wm.Unminimize(id)
+	a.hold(id, held{})
+	a.deck.Patch(id, func(w *wm.Window) { w.Minimized = false })
+	a.rebuildRows()
+	// Its picture once it is back on screen.
+	time.AfterFunc(holdFor, func() {
+		a.update(func() {
+			if w, ok := a.deck.Window(id); ok {
+				a.captureLater(w)
+			}
+		})
+	})
 }
 
 func (a *App) quitApp(id wm.WindowID) {
@@ -451,6 +486,7 @@ func (a *App) showPanel(search bool) {
 		if !a.ses.rounded {
 			wm.RoundWindow(a.panel.NativeHandle(), panelRadius)
 			wm.NoWindowAnimation(a.panel.NativeHandle())
+			wm.TrackPointerAlways(a.panel.NativeHandle())
 			a.ses.rounded = true
 		}
 	}
@@ -462,6 +498,8 @@ func (a *App) showPanel(search bool) {
 		a.panel.Focus()
 		a.ses.focusSearch = true
 	} else if !a.panel.IsVisible() {
+		// Not key: the window the user is in keeps the keyboard. The
+		// pointer reaches the rows all the same (TrackPointerAlways).
 		a.panel.ShowInactive()
 	}
 	a.invalidatePanel()
@@ -476,6 +514,9 @@ func (a *App) panelSize(d mygo.Display, search bool) (int, int) {
 		h := 2*listPad + max(len(a.ses.rows), 4)*listRowHeight
 		if search {
 			h += searchBlock
+		}
+		if a.ses.guide {
+			h = max(h, guideHeight) // room for the guide's card
 		}
 		return w, min(h, int(float64(H)*0.8))
 	}
@@ -517,6 +558,7 @@ func (a *App) hidePanel() {
 	}
 	a.ses.hovered = 0
 	a.ses.focusSearch = false
+	a.ses.guide = false
 }
 
 // invalidatePanel draws the panel anew.

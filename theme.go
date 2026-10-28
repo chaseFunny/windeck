@@ -55,6 +55,7 @@ type palette struct {
 	focus   ui.Color // --focus-ring
 
 	shadow ui.Color // the panel's, lg
+	scrim  ui.Color // what dims the panel under a guide
 }
 
 var lightPalette = palette{
@@ -82,6 +83,7 @@ var lightPalette = palette{
 	focus:   ui.RGBA(90, 75, 198, 0.35),
 
 	shadow: ui.RGBA(28, 28, 35, 0.12),
+	scrim:  ui.RGBA(28, 28, 35, 0.40),
 }
 
 var darkPalette = palette{
@@ -110,6 +112,7 @@ var darkPalette = palette{
 	focus:   ui.RGBA(181, 172, 241, 0.45),
 
 	shadow: ui.RGBA(0, 0, 0, 0.45),
+	scrim:  ui.RGBA(0, 0, 0, 0.55),
 }
 
 // brandTheme is MyGo's widgets in the same colors: buttons, switches,

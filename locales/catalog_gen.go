@@ -76,6 +76,20 @@ func (msgs Messages) AboutWebsite() string {
 	return Catalog.Format(msgs.locale, "aboutWebsite", nil)
 }
 
+// AppName says "Windeck"
+// in the language the app shows.
+//
+// The product's name, large, in the first launch's animation.
+func AppName() string { return In(i18n.Locale()).AppName() }
+
+// AppName says "Windeck"
+// in the language of msgs.
+//
+// The product's name, large, in the first launch's animation.
+func (msgs Messages) AppName() string {
+	return Catalog.Format(msgs.locale, "appName", nil)
+}
+
 // AppearanceDark says "Dark"
 // in the language the app shows.
 //
@@ -224,6 +238,146 @@ func CommonOK() string { return In(i18n.Locale()).CommonOK() }
 // A button closing a message.
 func (msgs Messages) CommonOK() string {
 	return Catalog.Format(msgs.locale, "commonOK", nil)
+}
+
+// GuideActions says "Close window · Minimize · Quit app"
+// in the language the app shows.
+//
+// The guide: W, M and Q.
+func GuideActions() string { return In(i18n.Locale()).GuideActions() }
+
+// GuideActions says "Close window · Minimize · Quit app"
+// in the language of msgs.
+//
+// The guide: W, M and Q.
+func (msgs Messages) GuideActions() string {
+	return Catalog.Format(msgs.locale, "guideActions", nil)
+}
+
+// GuideClose says "Close the panel"
+// in the language the app shows.
+//
+// The guide: Escape or the shortcut again.
+func GuideClose() string { return In(i18n.Locale()).GuideClose() }
+
+// GuideClose says "Close the panel"
+// in the language of msgs.
+//
+// The guide: Escape or the shortcut again.
+func (msgs Messages) GuideClose() string {
+	return Catalog.Format(msgs.locale, "guideClose", nil)
+}
+
+// GuideDetail says "Windeck waits in the menu bar. Try these now:"
+// in the language the app shows.
+//
+// Under the guide's title.
+func GuideDetail() string { return In(i18n.Locale()).GuideDetail() }
+
+// GuideDetail says "Windeck waits in the menu bar. Try these now:"
+// in the language of msgs.
+//
+// Under the guide's title.
+func (msgs Messages) GuideDetail() string {
+	return Catalog.Format(msgs.locale, "guideDetail", nil)
+}
+
+// GuideNote says "Change the shortcut in Settings → Shortcuts."
+// in the language the app shows.
+//
+// Under the guide's list.
+func GuideNote() string { return In(i18n.Locale()).GuideNote() }
+
+// GuideNote says "Change the shortcut in Settings → Shortcuts."
+// in the language of msgs.
+//
+// Under the guide's list.
+func (msgs Messages) GuideNote() string {
+	return Catalog.Format(msgs.locale, "guideNote", nil)
+}
+
+// GuideOpen says "Open, then Tab down the list"
+// in the language the app shows.
+//
+// The guide: what the shortcut does.
+func GuideOpen() string { return In(i18n.Locale()).GuideOpen() }
+
+// GuideOpen says "Open, then Tab down the list"
+// in the language of msgs.
+//
+// The guide: what the shortcut does.
+func (msgs Messages) GuideOpen() string {
+	return Catalog.Format(msgs.locale, "guideOpen", nil)
+}
+
+// GuideQuick says "A quick press goes back to the last window"
+// in the language the app shows.
+//
+// The guide: a quick press of the shortcut.
+func GuideQuick() string { return In(i18n.Locale()).GuideQuick() }
+
+// GuideQuick says "A quick press goes back to the last window"
+// in the language of msgs.
+//
+// The guide: a quick press of the shortcut.
+func (msgs Messages) GuideQuick() string {
+	return Catalog.Format(msgs.locale, "guideQuick", nil)
+}
+
+// GuideRelease says "Let go to switch to the highlighted window"
+// in the language the app shows.
+//
+// The guide: releasing the modifier.
+func GuideRelease() string { return In(i18n.Locale()).GuideRelease() }
+
+// GuideRelease says "Let go to switch to the highlighted window"
+// in the language of msgs.
+//
+// The guide: releasing the modifier.
+func (msgs Messages) GuideRelease() string {
+	return Catalog.Format(msgs.locale, "guideRelease", nil)
+}
+
+// GuideSearch says "Search the windows"
+// in the language the app shows.
+//
+// The guide: Space or slash.
+func GuideSearch() string { return In(i18n.Locale()).GuideSearch() }
+
+// GuideSearch says "Search the windows"
+// in the language of msgs.
+//
+// The guide: Space or slash.
+func (msgs Messages) GuideSearch() string {
+	return Catalog.Format(msgs.locale, "guideSearch", nil)
+}
+
+// GuideStart says "Start Using Windeck"
+// in the language the app shows.
+//
+// The guide's button, which hides it.
+func GuideStart() string { return In(i18n.Locale()).GuideStart() }
+
+// GuideStart says "Start Using Windeck"
+// in the language of msgs.
+//
+// The guide's button, which hides it.
+func (msgs Messages) GuideStart() string {
+	return Catalog.Format(msgs.locale, "guideStart", nil)
+}
+
+// GuideTitle says "Here is how Windeck works"
+// in the language the app shows.
+//
+// The title of the guide shown over the switcher after the first launch.
+func GuideTitle() string { return In(i18n.Locale()).GuideTitle() }
+
+// GuideTitle says "Here is how Windeck works"
+// in the language of msgs.
+//
+// The title of the guide shown over the switcher after the first launch.
+func (msgs Messages) GuideTitle() string {
+	return Catalog.Format(msgs.locale, "guideTitle", nil)
 }
 
 // HintClear says "Clear"
@@ -1162,6 +1316,20 @@ func (msgs Messages) RowMinimize() string {
 	return Catalog.Format(msgs.locale, "rowMinimize", nil)
 }
 
+// RowRestore says "Restore window"
+// in the language the app shows.
+//
+// The button of a minimized window's row that brings it back from the Dock.
+func RowRestore() string { return In(i18n.Locale()).RowRestore() }
+
+// RowRestore says "Restore window"
+// in the language of msgs.
+//
+// The button of a minimized window's row that brings it back from the Dock.
+func (msgs Messages) RowRestore() string {
+	return Catalog.Format(msgs.locale, "rowRestore", nil)
+}
+
 // SearchNoResults says "No windows match “{query}”"
 // in the language the app shows.
 //
@@ -1530,13 +1698,13 @@ func (msgs Messages) ShortcutsJump() string {
 	return Catalog.Format(msgs.locale, "shortcutsJump", nil)
 }
 
-// ShortcutsMinimize says "Minimize the window"
+// ShortcutsMinimize says "Minimize the window, or restore it"
 // in the language the app shows.
 //
 // What M does.
 func ShortcutsMinimize() string { return In(i18n.Locale()).ShortcutsMinimize() }
 
-// ShortcutsMinimize says "Minimize the window"
+// ShortcutsMinimize says "Minimize the window, or restore it"
 // in the language of msgs.
 //
 // What M does.
@@ -1752,6 +1920,20 @@ func SmartStats() string { return In(i18n.Locale()).SmartStats() }
 // in the language of msgs.
 func (msgs Messages) SmartStats() string {
 	return Catalog.Format(msgs.locale, "smartStats", nil)
+}
+
+// SplashTagline says "Ready. Switch windows like browser tabs."
+// in the language the app shows.
+//
+// Under the name, in the animation of the first launch.
+func SplashTagline() string { return In(i18n.Locale()).SplashTagline() }
+
+// SplashTagline says "Ready. Switch windows like browser tabs."
+// in the language of msgs.
+//
+// Under the name, in the animation of the first launch.
+func (msgs Messages) SplashTagline() string {
+	return Catalog.Format(msgs.locale, "splashTagline", nil)
 }
 
 // StatKeys says "keys per switch"

@@ -18,6 +18,10 @@
   "@aboutWebsite": {
     "description": "A button opening the website."
   },
+  "appName": "Windeck",
+  "@appName": {
+    "description": "The product's name, large, in the first launch's animation."
+  },
   "appearanceDark": "Dark",
   "@appearanceDark": {
     "description": "An appearance."
@@ -64,6 +68,46 @@
   "commonOK": "OK",
   "@commonOK": {
     "description": "A button closing a message."
+  },
+  "guideActions": "Close window · Minimize · Quit app",
+  "@guideActions": {
+    "description": "The guide: W, M and Q."
+  },
+  "guideClose": "Close the panel",
+  "@guideClose": {
+    "description": "The guide: Escape or the shortcut again."
+  },
+  "guideDetail": "Windeck waits in the menu bar. Try these now:",
+  "@guideDetail": {
+    "description": "Under the guide's title."
+  },
+  "guideNote": "Change the shortcut in Settings → Shortcuts.",
+  "@guideNote": {
+    "description": "Under the guide's list."
+  },
+  "guideOpen": "Open, then Tab down the list",
+  "@guideOpen": {
+    "description": "The guide: what the shortcut does."
+  },
+  "guideQuick": "A quick press goes back to the last window",
+  "@guideQuick": {
+    "description": "The guide: a quick press of the shortcut."
+  },
+  "guideRelease": "Let go to switch to the highlighted window",
+  "@guideRelease": {
+    "description": "The guide: releasing the modifier."
+  },
+  "guideSearch": "Search the windows",
+  "@guideSearch": {
+    "description": "The guide: Space or slash."
+  },
+  "guideStart": "Start Using Windeck",
+  "@guideStart": {
+    "description": "The guide's button, which hides it."
+  },
+  "guideTitle": "Here is how Windeck works",
+  "@guideTitle": {
+    "description": "The title of the guide shown over the switcher after the first launch."
   },
   "hintClear": "Clear",
   "@hintClear": {
@@ -253,6 +297,10 @@
   "resetTitle": "Reset learned data",
   "rowClose": "Close window",
   "rowMinimize": "Minimize window",
+  "rowRestore": "Restore window",
+  "@rowRestore": {
+    "description": "The button of a minimized window's row that brings it back from the Dock."
+  },
   "searchNoResults": "No windows match “{query}”",
   "@searchNoResults": {
     "description": "The list, when the search finds nothing.",
@@ -327,7 +375,7 @@
   "@shortcutsJump": {
     "description": "What the left and right arrows do."
   },
-  "shortcutsMinimize": "Minimize the window",
+  "shortcutsMinimize": "Minimize the window, or restore it",
   "@shortcutsMinimize": {
     "description": "What M does."
   },
@@ -384,6 +432,10 @@
   "smartPredict": "Predict the second window",
   "smartPredictDetail": "The first Tab always goes back; the second goes where you usually go next.",
   "smartStats": "On this Mac",
+  "splashTagline": "Ready. Switch windows like browser tabs.",
+  "@splashTagline": {
+    "description": "Under the name, in the animation of the first launch."
+  },
   "statKeys": "keys per switch",
   "statToday": "switches today",
   "statTopTwo": "found in the first two",

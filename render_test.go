@@ -65,6 +65,18 @@ func TestRenderLive(t *testing.T) {
 	a.ses.searchBuf = "zzzz"
 	a.setQuery("zzzz")
 	render(t, dir, "panel-search-empty.png", a.panelView, false, pw, ph)
+	// The guide over the panel, after the first launch.
+	a.ses.searchBuf = ""
+	a.setQuery("")
+	a.ses.guide = true
+	render(t, dir, "panel-guide.png", a.panelView, false, pw, ph)
+	render(t, dir, "panel-guide-dark.png", a.panelView, true, pw, ph)
+	a.set.Layout = settings.LayoutList
+	a.rebuildRows()
+	render(t, dir, "panel-list-guide.png", a.panelView, false, listWidth, guideHeight)
+	a.set.Layout = settings.LayoutTabs
+	a.rebuildRows()
+	a.ses.guide = false
 	for i, name := range []string{"general", "shortcuts", "privacy", "smart", "license", "about"} {
 		a.ss.page = i
 		render(t, dir, "settings-"+name+".png", a.settingsView, false, 880, 620)
@@ -94,6 +106,8 @@ func testApp(t *testing.T) *App {
 		shots: previewCache{byID: map[wm.WindowID]*preview{}, capturing: map[wm.WindowID]bool{}, failed: map[wm.WindowID]bool{}},
 	}
 	a.ses.collapsed = map[string]bool{}
+	a.holds = map[wm.WindowID]held{}
+	a.heldWin = map[wm.WindowID]wm.Window{}
 	a.model = newTestModel()
 	a.lic.TrialStart = time.Now()
 	// Icons come from the running app; here every app has Windeck's.

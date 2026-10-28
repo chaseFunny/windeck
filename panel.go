@@ -32,15 +32,19 @@ const (
 	rowGap       = 12 // between a row's icon and its title
 	titleStart   = rowInset + rowIcon + rowGap
 
-	previewPad   = 32
-	headerHeight = 48
-	headerGap    = 24
+	// The preview's header lines up with the search field, 12 from the
+	// top and as tall; the picture takes the rest, with a small margin.
+	previewTop   = 12
+	previewPad   = 16
+	headerHeight = 36
+	headerGap    = 12
 
 	// The list layout's.
 	listWidth     = 720
 	listRowHeight = 48
 	listPad       = 8
 	searchBlock   = 12 + 36 + 8 // the search field with its margins
+	guideHeight   = 560         // the list panel's, under the guide
 )
 
 // The design's motion: 120 ms for hover, easing out.
@@ -83,6 +87,9 @@ func (a *App) panelView(c *ui.Context) {
 	c.Root().Background(ui.Transparent)
 	if a.sw.Phase() == switcher.Idle {
 		return
+	}
+	if a.ses.guide {
+		defer a.guideOverlay(c, pal)
 	}
 	if a.set.Layout == settings.LayoutList {
 		a.listPanelView(c, pal)
@@ -168,6 +175,16 @@ func (a *App) listRow(c *ui.Context, pal *palette, r row) {
 // in state A the event tap takes them before any app does.
 func (a *App) panelKeys(c *ui.Context) {
 	if a.sw.Phase() != switcher.Searching {
+		return
+	}
+	if a.ses.guide {
+		// The guide's button is the one Return presses.
+		if c.Shortcut(0, ui.KeyEnter) {
+			a.hideGuide()
+		}
+		if c.Shortcut(0, ui.KeyEscape) {
+			a.do(a.sw.Dismiss())
+		}
 		return
 	}
 	if c.Shortcut(0, ui.KeyDown) || c.Shortcut(0, ui.KeyTab) || c.Shortcut(ui.Ctrl, ui.KeyN) {
@@ -461,7 +478,10 @@ func (a *App) hovering(id wm.WindowID, hovered bool) {
 func (a *App) rowButtons(c *ui.Context, pal *palette, r row) {
 	id := r.id
 	ui.Row(c).Gap(2).Shrink(0).Children(func() {
-		if !r.win.Minimized {
+		if r.win.Minimized {
+			// In the Dock: back, as its Dock picture does.
+			smallButton(c, pal, "restore", restoreIcon, locales.RowRestore(), false).OnClick(func() { a.restoreWindow(id) })
+		} else {
 			smallButton(c, pal, "min", minimizeIcon, locales.RowMinimize(), false).OnClick(func() { a.minimizeWindow(id) })
 		}
 		smallButton(c, pal, "close", closeIcon, locales.RowClose(), true).OnClick(func() { a.closeWindow(id) })
@@ -495,7 +515,11 @@ func (a *App) ordinal(c *ui.Context, pal *palette, id wm.WindowID) {
 	if id == a.ses.predicted && i == 1 {
 		ui.Icon(c, starIcon).Size(12, 12).TextColor(pal.brandText).Tooltip(locales.PredictedTip()).Label(locales.PredictedTip())
 	}
-	if i >= 0 && i < 3 {
+	// The presses of Tab a window is away: the list layout's rows are in
+	// the cycle's order, so its numbers count down the rows. The tabs'
+	// are by app, where Tab goes down the rows too and numbers of the
+	// cycle would point elsewhere.
+	if a.set.Layout == settings.LayoutList && i >= 0 && i < 3 {
 		ui.Text(c, itoa(i+1)).FontSize(12).FontWeight(500).TextColor(pal.textFaint).Width(12).TextAlign(ui.End)
 	}
 }
@@ -563,7 +587,7 @@ func (a *App) appIconView(c *ui.Context, pal *palette, path string, size float32
 func (a *App) previewView(c *ui.Context, pal *palette) {
 	id := a.sw.Selected()
 	r, ok := a.rowOf(id)
-	col := ui.Column(c.Key("preview")).Grow(1).MinWidth(0).Padding(24, previewPad, previewPad, previewPad).Gap(headerGap).AlignItems(ui.Stretch)
+	col := ui.Column(c.Key("preview")).Grow(1).MinWidth(0).Padding(previewTop, previewPad, previewPad, previewPad).Gap(headerGap).AlignItems(ui.Stretch)
 	col.Children(func() {
 		if !ok {
 			return
@@ -579,7 +603,7 @@ func (a *App) previewView(c *ui.Context, pal *palette) {
 			// than the window is: a small window stays small.
 			W, H := c.Size()
 			sw := W - sidebarWidth - 2*previewPad
-			sh := H - 24 - headerHeight - headerGap - previewPad
+			sh := H - previewTop - headerHeight - headerGap - previewPad
 			if bmp == nil {
 				if a.picturePending(r) && sw > 0 && sh > 0 {
 					// Its picture is on the way: the window's shape, in
@@ -620,15 +644,15 @@ func (a *App) rowOf(id wm.WindowID) (row, bool) {
 
 func (a *App) previewHeader(c *ui.Context, pal *palette, r row) {
 	ui.Row(c.Key("head")).Height(headerHeight).Shrink(0).Gap(12).AlignItems(ui.Center).Children(func() {
-		a.appIconView(c, pal, r.path, 32)
-		ui.Column(c).Grow(1).MinWidth(0).Gap(1).Children(func() {
+		a.appIconView(c, pal, r.path, 28)
+		ui.Column(c).Grow(1).MinWidth(0).Gap(0).Children(func() {
 			title := r.win.Title
 			if title == "" || r.kind == rowApp {
 				title = r.name
 			}
-			ui.Text(c, title).FontSize(16).FontWeight(500).TextColor(pal.text).SingleLine().Ellipsis("…")
+			ui.Text(c, title).FontSize(14).FontWeight(500).TextColor(pal.text).SingleLine().Ellipsis("…")
 			if title != r.name {
-				ui.Text(c, r.name).FontSize(13).TextColor(pal.textMuted).SingleLine()
+				ui.Text(c, r.name).FontSize(12).TextColor(pal.textMuted).SingleLine()
 			}
 		})
 		ui.Row(c).Gap(8).Shrink(0).Children(func() { a.badges(c, pal, r, false) })

@@ -1,7 +1,14 @@
 # Changelog
 
-## 1.1.2
+## 1.2.0
 
+- A welcome on the first launch: the logo and the name come in with a burst of confetti; then the permissions if they are still to give, and the switcher itself under a guide to its keys.
+- The pointer works in the switcher opened by the shortcut: hovering a row shows its buttons, as it did only in search before.
+- Tab goes down the list once the panel shows, one row a press, instead of jumping along the history; before it shows, a quick press still goes back to the previous window.
+- Minimizing no longer shakes the list: the row stays where it is, with the highlight on it.
+- A minimized window's row has a restore button and its close button; M restores it too.
+- The shortcut closes the panel kept open by search.
+- The preview's header lines up with the search field, and the picture is larger.
 - Fixed: holding W a moment too long closed every window of the app, one after the other, as the key repeated and the highlight went on to the next; and Q held quit app after app. W, M and Q now act once a press.
 - The panel's hints say what W and Q act on: "Close window" and "Quit app".
 

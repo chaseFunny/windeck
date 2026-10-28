@@ -169,8 +169,17 @@ func (s *Switcher) finish(a Action) Action {
 	return a
 }
 
-// tab moves the highlight along the cycle, from wherever it is.
+// tab moves the highlight. Before the panel shows, along the cycle: a
+// blind press goes back to the previous window, the next to the one
+// before. Once it shows, down the list the user sees, one row a press,
+// never jumping about; Shift goes up.
 func (s *Switcher) tab(back bool) Action {
+	if s.shown && len(s.list) > 0 {
+		if back {
+			return s.move(-1)
+		}
+		return s.move(1)
+	}
 	if len(s.cycle) == 0 {
 		return Action{}
 	}

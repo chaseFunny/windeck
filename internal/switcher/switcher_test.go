@@ -231,3 +231,24 @@ func TestEmptyCycleDoesNothing(t *testing.T) {
 		t.Fatalf("open empty: %+v", a)
 	}
 }
+
+// Once the panel shows, Tab goes down the list as the user sees it, one
+// row a press, wrapping at the end; before, a blind Tab follows the cycle.
+func TestTabFollowsTheListOnceShown(t *testing.T) {
+	s := open(t)
+	s.SetList([]wm.WindowID{4, 2, 1, 3}, []int{0, 1, 1, 2})
+	if a := key(s, wm.KeyTab); a.Kind != Redraw || s.Selected() != 3 {
+		t.Fatalf("blind tab: selected %d, want the cycle's 3", s.Selected())
+	}
+	s.Timer(true)
+	for _, want := range []wm.WindowID{4, 2, 1, 3} {
+		key(s, wm.KeyTab)
+		if s.Selected() != want {
+			t.Fatalf("tab: selected %d, want %d", s.Selected(), want)
+		}
+	}
+	s.Key(wm.KeyEvent{Key: wm.KeyTab, Shift: true, Mod: true})
+	if s.Selected() != 1 {
+		t.Fatalf("shift-tab: selected %d, want 1", s.Selected())
+	}
+}

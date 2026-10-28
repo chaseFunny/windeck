@@ -7,19 +7,22 @@ The switcher has two states.
 | Key | Does |
 |---|---|
 | ⌥ Tab, quick press and release | goes to the previous window, nothing shows |
-| Tab | the next window, most recently used first; the second place is the predicted one |
-| ⇧ Tab | back |
+| Tab, before the panel shows | the next window, most recently used first; the second place is the predicted one |
+| Tab, once the panel shows | down the list as it shows, one row a press, wrapping at the end |
+| ⇧ Tab | back, or up the list |
 | ↑ ↓ | up and down the list as it shows |
 | ← → | the previous or next app's group |
 | release ⌥ | switch to the highlighted window |
-| W / M / Q | close the window / minimize it / quit its app; the panel stays |
+| W / M / Q | close the window / minimize it, or restore a minimized one / quit its app; the panel stays and the rows stay in place |
 | Space or / | search |
 | Esc | cancel |
-| hover, click | highlight, switch |
+| hover, click | highlight and show the row's buttons (minimize or restore, close), switch |
 
 The panel shows once the shortcut is held past the quick-switch delay (150 ms, in Settings → Shortcuts). W, M and Q can be turned off there, so that they never close anything by mistake.
 
 ## Searching: the modifier released
+
+The panel stays open: after Space or /, after a click in the search field, and under the guide shown after the first launch.
 
 | Key | Does |
 |---|---|
@@ -27,6 +30,7 @@ The panel shows once the shortcut is held past the quick-switch delay (150 ms, i
 | ↑ ↓, Tab | move in the results |
 | Return | switch |
 | Esc | clear the query; on an empty one, close |
+| ⌥ Tab | close the panel |
 
 ## Layouts
 

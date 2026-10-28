@@ -86,3 +86,24 @@ func TestSeedHistory(t *testing.T) {
 		t.Fatalf("mru %v", got)
 	}
 }
+
+// A window the listing misses for a moment, as one going to the Dock,
+// comes back to its place, not to its group's end.
+func TestWindowKeepsItsPlace(t *testing.T) {
+	d := New()
+	a := wm.Window{ID: 1, PID: 10, BundleID: "app"}
+	b := wm.Window{ID: 2, PID: 10, BundleID: "app"}
+	c := wm.Window{ID: 3, PID: 10, BundleID: "app"}
+	d.Update([]wm.Window{a, b, c})
+	d.Update([]wm.Window{a, c})
+	d.Update([]wm.Window{a, b, c})
+	var got []wm.WindowID
+	for _, g := range d.Groups() {
+		for _, w := range g.Windows {
+			got = append(got, w.ID)
+		}
+	}
+	if len(got) != 3 || got[0] != 1 || got[1] != 2 || got[2] != 3 {
+		t.Fatalf("order %v, want [1 2 3]", got)
+	}
+}

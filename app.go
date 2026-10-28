@@ -32,6 +32,11 @@ type App struct {
 	sw       switcher.Switcher
 	// apps are the running apps, for those without windows.
 	apps []wm.App
+	// holds are what Windeck just did to windows, over the listings for a
+	// moment, and heldWin the windows as they were then.
+	splash  splashState
+	holds   map[wm.WindowID]held
+	heldWin map[wm.WindowID]wm.Window
 
 	trusted    bool // the accessibility permission
 	canCapture bool // the screen recording permission
@@ -72,6 +77,8 @@ type session struct {
 	// nothing; focusSearch asks the view to focus the search field.
 	generation  int
 	focusSearch bool
+	// guide shows the keys over the panel, after the first launch.
+	guide bool
 	// pointer is where the pointer was as the panel showed, or last
 	// highlighted a row: hovering highlights only once it moves.
 	pointer mygo.Point
@@ -94,6 +101,8 @@ func newApp() *App {
 		shots: previewCache{byID: map[wm.WindowID]*preview{}, capturing: map[wm.WindowID]bool{}, failed: map[wm.WindowID]bool{}},
 	}
 	a.ses.collapsed = map[string]bool{}
+	a.holds = map[wm.WindowID]held{}
+	a.heldWin = map[wm.WindowID]wm.Window{}
 	a.set = settings.Load(a.path("settings.json"))
 	a.lic = license.Load(a.path("license.json"), time.Now())
 	a.model = smart.Load(a.path("learned.json"))
@@ -150,7 +159,10 @@ func (a *App) start() {
 		a.showForDev(dev)
 	} else {
 		a.startTap()
-		if !a.set.Onboarded || !a.trusted {
+		switch {
+		case !a.set.Onboarded:
+			a.showSplash(a.afterSplash)
+		case !a.trusted:
 			a.openOnboarding()
 		}
 	}
@@ -319,11 +331,62 @@ func (a *App) refreshNow() {
 	}()
 }
 
+// held is what Windeck itself just did to a window, which the listings
+// may not show yet: a window takes a moment to go to the Dock, come back
+// or close, and a listing in between would move its row back and forth.
+type held struct {
+	until     time.Time
+	minimized bool
+	gone      bool
+}
+
+// holdFor is how long what Windeck did outweighs the listings.
+const holdFor = 1200 * time.Millisecond
+
+// hold keeps what Windeck did to a window over the listings for a moment,
+// then lists the windows again, to take what they say from then on.
+func (a *App) hold(id wm.WindowID, h held) {
+	h.until = time.Now().Add(holdFor)
+	if w, ok := a.deck.Window(id); ok {
+		a.heldWin[id] = w
+	}
+	a.holds[id] = h
+	time.AfterFunc(holdFor+50*time.Millisecond, func() { a.update(a.refreshNow) })
+}
+
+// applyHolds makes a listing say what Windeck just did.
+func (a *App) applyHolds(ws []wm.Window) []wm.Window {
+	now := time.Now()
+	for id, h := range a.holds {
+		if now.After(h.until) {
+			delete(a.holds, id)
+			delete(a.heldWin, id)
+			continue
+		}
+		i := slices.IndexFunc(ws, func(w wm.Window) bool { return w.ID == id })
+		switch {
+		case h.gone && i >= 0:
+			ws = slices.Delete(ws, i, i+1)
+		case h.gone:
+		case i >= 0:
+			ws[i].Minimized = h.minimized
+		default:
+			// Missed by this listing, on its way: kept as it was.
+			if w, ok := a.heldWin[id]; ok {
+				w.Minimized = h.minimized
+				ws = append(ws, w)
+			}
+		}
+	}
+	return ws
+}
+
 // listed takes a new listing of the windows.
 func (a *App) listed(ws []wm.Window, apps []wm.App) {
 	// Windeck's own windows are not switched to.
 	pid := int32(os.Getpid())
 	ws = slices.DeleteFunc(ws, func(w wm.Window) bool { return w.PID == pid })
+	ws = a.applyHolds(ws)
 	a.deck.Update(ws)
 	a.apps = apps
 	a.pool.Keep(func(id uint32) bool { _, ok := a.deck.Window(wm.WindowID(id)); return ok })
@@ -383,6 +446,10 @@ func (a *App) showForDev(what string) {
 		})
 	case "settings":
 		a.openSettings()
+	case "splash":
+		a.showSplash(func() {})
+	case "guide":
+		time.AfterFunc(time.Second, func() { a.update(a.showGuide) })
 	default:
 		a.openOnboarding()
 	}
