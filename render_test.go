@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"image/png"
 	"os"
 	"path/filepath"
@@ -166,4 +167,37 @@ func TestRenderUpdates(t *testing.T) {
 
 func testUpdate() *mygo.Update {
 	return &mygo.Update{Version: "1.1.0", Notes: "### Added\n\n- A second layout, **List**: icons and titles alone.\n- A Shortcuts page in Settings.\n- Updates from the menu bar.\n\n### Fixed\n\n- The switcher no longer flashes as Tab is held."}
+}
+
+// TestRenderIntro draws the first launch's intro at moments of its
+// timeline, on a 1512 by 982 screen (without the GPU's aurora).
+func TestRenderIntro(t *testing.T) {
+	dir := os.Getenv("WINDECK_RENDER")
+	if dir == "" {
+		t.Skip("WINDECK_RENDER not set")
+	}
+	registerFonts()
+	a := testApp(t)
+	a.intro = introState{word: wordGlyphs(), toOnboarding: true}
+	var x float32
+	for _, g := range a.intro.word {
+		a.intro.offset = append(a.intro.offset, x)
+		a.intro.boxes = append(a.intro.boxes, glyphBox(g))
+		x += g.advance
+	}
+	d := mygo.Display{Bounds: mygo.Rectangle{Width: 1512, Height: 982}, WorkArea: mygo.Rectangle{Y: 33, Width: 1512, Height: 949}}
+	a.intro.display = d
+	ox, oy := onboardingOrigin(d)
+	a.intro.land = ui.Point{X: float32(ox + onboardW/2), Y: float32(oy + 96)}
+	a.intro.landSide = 64 * iconGrid / 1024
+	for _, ms := range []float32{700, 1500, 2150, 2450, 2750, 3100, 3400, 3900, 4600, 5050} {
+		for _, dark := range []bool{false} {
+			name := fmt.Sprintf("intro-%04d.png", int(ms))
+			render(t, dir, name, func(c *ui.Context) {
+				pal := themed(c)
+				c.Root().Background(pal.bgSubtle)
+				ui.Box(c).Fill().Draw(func(p *ui.Painter, r ui.Rect) { a.paintIntro(p, r, pal, ms) })
+			}, dark, 1512, 982)
+		}
+	}
 }

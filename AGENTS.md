@@ -22,7 +22,7 @@ go vet ./... && go tool mygo vet .
 go test ./...
 WINDECK_LIVE=1 go test ./internal/wm -run TestLive -v      # this Mac's windows, from a terminal with the permissions
 WINDECK_RENDER=/tmp/windeck go test -run TestRenderLive .  # the views drawn to PNGs
-WINDECK_DEV_SHOW=panel go run .                            # a window as it shows, without the shortcut (panel, search, settings, onboarding)
+WINDECK_DEV_SHOW=panel go run .                            # a window as it shows, without the shortcut (panel, search, settings, onboarding, intro, guide)
 go tool mygo build                                         # build/darwin-arm64/Windeck.app and .dmg, signed for updates with the key in mygo.json
 go tool mygo build -upload                                 # a draft release on chaseFunny/windeck, with the update manifest; CHANGELOG.md needs a "## <version>" section
 go run ./internal/tools/appicon                            # redraw the icon

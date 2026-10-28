@@ -34,7 +34,7 @@ type App struct {
 	apps []wm.App
 	// holds are what Windeck just did to windows, over the listings for a
 	// moment, and heldWin the windows as they were then.
-	splash  splashState
+	intro   introState
 	holds   map[wm.WindowID]held
 	heldWin map[wm.WindowID]wm.Window
 
@@ -161,7 +161,7 @@ func (a *App) start() {
 		a.startTap()
 		switch {
 		case !a.set.Onboarded:
-			a.showSplash(a.afterSplash)
+			a.showIntro()
 		case !a.trusted:
 			a.openOnboarding()
 		}
@@ -446,8 +446,8 @@ func (a *App) showForDev(what string) {
 		})
 	case "settings":
 		a.openSettings()
-	case "splash":
-		a.showSplash(func() {})
+	case "intro":
+		a.showIntro()
 	case "guide":
 		time.AfterFunc(time.Second, func() { a.update(a.showGuide) })
 	default:

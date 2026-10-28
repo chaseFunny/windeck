@@ -2,7 +2,7 @@
 
 ## 1.2.0
 
-- A welcome on the first launch: the logo and the name come in with a burst of confetti; then the permissions if they are still to give, and the switcher itself under a guide to its keys.
+- An intro on the first launch, over the whole screen with a breathing violet aurora: "Windeck" is written out by hand, each letter turns into a window card, the cards stack into the logo's deck as its violet square opens, the name rises under it, and the logo flies to the permissions' window, or into the switcher shown under a guide to its keys. A click, Return or Escape skips it.
 - The pointer works in the switcher opened by the shortcut: hovering a row shows its buttons, as it did only in search before.
 - Tab goes down the list once the panel shows, one row a press, instead of jumping along the history; before it shows, a quick press still goes back to the previous window.
 - Minimizing no longer shakes the list: the row stays where it is, with the highlight on it.

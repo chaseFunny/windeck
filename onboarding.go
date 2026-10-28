@@ -18,6 +18,19 @@ type onboardingState struct {
 	// captureAsked tells that the user went to allow screen recording,
 	// which takes effect once Windeck starts again.
 	captureAsked bool
+	// introLogo hides the window's logo while the intro's flies to it, on
+	// display, where the intro played.
+	introLogo bool
+	display   *mygo.Display
+}
+
+const onboardW, onboardH = 680, 640
+
+// onboardingOrigin is where the onboarding window shows on d: in the
+// middle of its work area.
+func onboardingOrigin(d mygo.Display) (int, int) {
+	wa := d.WorkArea
+	return wa.X + (wa.Width-onboardW)/2, wa.Y + (wa.Height-onboardH)/2
 }
 
 func (a *App) openOnboarding() {
@@ -28,8 +41,8 @@ func (a *App) openOnboarding() {
 	a.ob.step = 0
 	a.onboardWin = mygo.NewWindow(mygo.WindowOptions{
 		Title:                locales.OnboardTitle(),
-		Width:                680,
-		Height:               640,
+		Width:                onboardW,
+		Height:               onboardH,
 		DisableResize:        true,
 		DisableMaximize:      true,
 		TitleBarStyle:        mygo.TitleBarHiddenInset,
@@ -37,7 +50,11 @@ func (a *App) openOnboarding() {
 		TrafficLightPosition: &mygo.Point{X: 16, Y: 16},
 		Content:              ui.View(a.onboardingView),
 	})
-	a.onboardWin.Center()
+	if a.ob.display != nil {
+		a.onboardWin.SetPosition(onboardingOrigin(*a.ob.display))
+	} else {
+		a.onboardWin.Center()
+	}
 	a.onboardWin.OnClosed(func() { a.onboardWin = nil })
 	focusApp(a.onboardWin)
 	a.watchPermissions()
@@ -87,8 +104,10 @@ func (a *App) onboardingView(c *ui.Context) {
 		ui.Box(c).Height(44).Absolute().Top(0).Left(0).Right(0).DragWindow()
 		ui.Column(c).Grow(1).Padding(64, 48, 0, 48).Gap(32).AlignItems(ui.Stretch).Children(func() {
 			ui.Column(c).AlignItems(ui.Center).Gap(16).Children(func() {
-				if b := a.appLogo(); b != nil {
+				if b := a.appLogo(); b != nil && !a.ob.introLogo {
 					ui.Image(c, b).Size(64, 64)
+				} else {
+					ui.Box(c).Size(64, 64) // the intro's logo lands here
 				}
 				title, sub := locales.OnboardWelcome(), locales.OnboardWelcomeDetail()
 				if a.ob.step == 1 {
