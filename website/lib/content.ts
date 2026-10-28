@@ -34,7 +34,7 @@ export const content = {
       { title: 'A large, sharp preview', body: 'The highlighted window shows big, so two similar editor windows never get mixed up.' },
       { title: 'Every window, wherever it is', body: 'Minimized, hidden, on another desktop or display: all listed, each with a badge saying where.' },
       { title: 'Places that stay put', body: 'Apps and windows keep their place in the list; only the highlight moves.' },
-      { title: 'Act without leaving', body: 'W closes, M minimizes, Q quits the app, while the panel stays. Rather not? Turn them off in Settings → Shortcuts.' },
+      { title: 'Act without leaving', body: 'W closes, M minimizes or restores, Q quits the app, while the panel stays; or hover a row for its buttons. Rather not use the keys? Turn them off in Settings → Shortcuts.' },
       { title: 'Light and native', body: 'One native app of a few megabytes, driven by events rather than polling, that keeps itself up to date.' },
     ],
     smart: {
@@ -63,7 +63,7 @@ export const content = {
     facts: {
       title: 'Small, quiet, local.',
       items: [
-        { value: '4.8 MB', label: 'to download' },
+        { value: '5.1 MB', label: 'to download' },
         { value: '0', label: 'window titles sent anywhere' },
         { value: '13+', label: 'macOS version' },
         { value: '2', label: 'languages: English, 简体中文' },
@@ -115,7 +115,7 @@ export const content = {
       { title: '高清大预览', body: '选中的窗口在中央大图显示，两个相似的编辑器窗口再也不会认错。' },
       { title: '不管窗口在哪', body: '最小化、已隐藏、在其他桌面或外接显示器的窗口全部列出，并用徽标标明位置。' },
       { title: '位置稳定不乱跳', body: '应用与窗口在列表中的位置固定，只有高亮在移动。' },
-      { title: '不离开面板就能处理', body: 'W 关闭、M 最小化、Q 退出应用，面板保持不动；不需要的话，可在 设置 → 快捷键 里关掉。' },
+      { title: '不离开面板就能处理', body: 'W 关闭、M 最小化或恢复、Q 退出应用，面板保持不动；鼠标移到某一行也会出现按钮。不想用按键的话，可在 设置 → 快捷键 里关掉。' },
       { title: '轻巧、原生', body: '只有几 MB 的原生应用，靠系统事件驱动，不轮询，还会自动更新。' },
     ],
     smart: {
@@ -144,7 +144,7 @@ export const content = {
     facts: {
       title: '小巧、安静、只在本机。',
       items: [
-        { value: '4.8 MB', label: '安装包大小' },
+        { value: '5.1 MB', label: '安装包大小' },
         { value: '0', label: '条窗口标题被上传' },
         { value: '13+', label: '支持的 macOS 版本' },
         { value: '2', label: '种语言：English、简体中文' },
