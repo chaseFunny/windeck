@@ -135,6 +135,9 @@ type introState struct {
 // showIntro plays the intro on the display with the pointer, then goes
 // on to the permissions or the switcher.
 func (a *App) showIntro() {
+	if a.intro.win != nil {
+		return // playing
+	}
 	in := &a.intro
 	*in = introState{word: wordGlyphs()}
 	var x float32

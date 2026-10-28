@@ -448,6 +448,10 @@
     "description": "The panel layout setting."
   },
   "trayPermissions": "Permissions & Shortcut…",
+  "trayPlayIntro": "Play the Intro",
+  "@trayPlayIntro": {
+    "description": "A menu bar item of development builds: plays the first launch's intro again."
+  },
   "trayQuit": "Quit Windeck",
   "trayRestartUpdate": "Restart to Update to {version}",
   "@trayRestartUpdate": {

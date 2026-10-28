@@ -2004,6 +2004,22 @@ func (msgs Messages) TrayPermissions() string {
 	return Catalog.Format(msgs.locale, "trayPermissions", nil)
 }
 
+// TrayPlayIntro says "Play the Intro"
+// in the language the app shows.
+//
+// A menu bar item of development builds: plays the first launch's intro
+// again.
+func TrayPlayIntro() string { return In(i18n.Locale()).TrayPlayIntro() }
+
+// TrayPlayIntro says "Play the Intro"
+// in the language of msgs.
+//
+// A menu bar item of development builds: plays the first launch's intro
+// again.
+func (msgs Messages) TrayPlayIntro() string {
+	return Catalog.Format(msgs.locale, "trayPlayIntro", nil)
+}
+
 // TrayQuit says "Quit Windeck"
 // in the language the app shows.
 func TrayQuit() string { return In(i18n.Locale()).TrayQuit() }

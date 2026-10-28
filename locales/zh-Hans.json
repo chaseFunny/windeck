@@ -168,6 +168,7 @@
   "trayCheckUpdates": "检查更新…",
   "trayLayout": "布局",
   "trayPermissions": "权限与快捷键引导…",
+  "trayPlayIntro": "播放安装动画",
   "trayQuit": "退出窗签",
   "trayRestartUpdate": "重启以更新到 {version}",
   "traySearch": "搜索窗口（{shortcut} 后按空格）",

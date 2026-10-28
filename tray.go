@@ -67,8 +67,13 @@ func (a *App) trayMenu() *mygo.Menu {
 		}},
 		{Label: locales.TraySettings(), Accelerator: "Cmd+,", Click: func(*mygo.MenuItem, *mygo.Window) { a.openSettings() }},
 		{Label: locales.TrayPermissions(), Click: func(*mygo.MenuItem, *mygo.Window) { a.openOnboarding() }},
-		mygo.Separator(),
 	}
+	if mygo.IsDev() {
+		// Development only, as popMind's: the first launch's intro again.
+		// Release builds leave it out.
+		items = append(items, &mygo.MenuItem{Label: locales.TrayPlayIntro(), Click: func(*mygo.MenuItem, *mygo.Window) { a.showIntro() }})
+	}
+	items = append(items, mygo.Separator())
 	items = append(items, update...)
 	items = append(items, mygo.Separator(),
 		&mygo.MenuItem{Label: locales.TrayQuit(), Accelerator: "Cmd+Q", Click: func(*mygo.MenuItem, *mygo.Window) { mygo.App.Quit() }})
