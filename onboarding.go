@@ -47,6 +47,7 @@ func (a *App) openOnboarding() {
 		DisableMaximize:      true,
 		TitleBarStyle:        mygo.TitleBarHiddenInset,
 		TitleBarHeight:       44,
+		Vibrancy:             mygo.VibrancyUnderWindow,
 		TrafficLightPosition: &mygo.Point{X: 16, Y: 16},
 		Content:              ui.View(a.onboardingView),
 	})
@@ -99,7 +100,7 @@ func (a *App) watchPermissions() {
 
 func (a *App) onboardingView(c *ui.Context) {
 	pal := themed(c)
-	c.Root().Background(pal.bgPage)
+	c.Root().Background(glass(c, pal, pal.bgPage))
 	ui.Column(c).Fill().AlignItems(ui.Stretch).Children(func() {
 		ui.Box(c).Height(44).Absolute().Top(0).Left(0).Right(0).DragWindow()
 		ui.Column(c).Grow(1).Padding(64, 48, 0, 48).Gap(32).AlignItems(ui.Stretch).Children(func() {

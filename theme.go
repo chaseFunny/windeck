@@ -174,3 +174,26 @@ func registerFonts() {
 	}
 	ui.RegisterFont(nunito, fontDisplay)
 }
+
+// glass is a window's surface over the system's material: col at the
+// tints popMind's panels use, so the blurred desktop shows through, as
+// Spotlight's and System Settings' do; without the material, col itself.
+// Cards on it keep their plain colors, and their text its contrast.
+func glass(c *ui.Context, pal *palette, col ui.Color) ui.Color {
+	if !c.Vibrancy() {
+		return col
+	}
+	if pal.dark {
+		return col.Alpha(0.55)
+	}
+	return col.Alpha(0.5)
+}
+
+// glassTint is a layer over a glass surface, as a sidebar: col at a
+// light tint over the material, col itself without it.
+func glassTint(c *ui.Context, col ui.Color, tint float32) ui.Color {
+	if !c.Vibrancy() {
+		return col
+	}
+	return col.Alpha(tint)
+}

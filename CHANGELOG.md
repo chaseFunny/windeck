@@ -9,6 +9,7 @@
 - A minimized window's row has a restore button and its close button; M restores it too.
 - The shortcut closes the panel kept open by search.
 - The preview's header lines up with the search field, and the picture is larger.
+- Translucent, as popMind and the system's own panels: the switcher floats on the popover material, Settings on the sidebar material as System Settings does, the onboarding and update windows on the window's; the blurred desktop shows through, and cards keep their plain colors.
 - Fixed: holding W a moment too long closed every window of the app, one after the other, as the key repeated and the highlight went on to the next; and Q held quit app after app. W, M and Q now act once a press.
 - The panel's hints say what W and Q act on: "Close window" and "Quit app".
 

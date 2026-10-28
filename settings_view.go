@@ -82,6 +82,7 @@ func (a *App) openSettings() {
 		TitleBarHeight:       titleBarTall,
 		TrafficLightPosition: &mygo.Point{X: 16, Y: 16},
 		DisableMaximize:      true,
+		Vibrancy:             mygo.VibrancySidebar,
 		StateKey:             "settings",
 		Content:              ui.View(a.settingsView),
 	})
@@ -107,10 +108,10 @@ func navPages() []navPage {
 
 func (a *App) settingsView(c *ui.Context) {
 	pal := themed(c)
-	c.Root().Background(pal.bgPage)
+	c.Root().Background(glassTint(c, pal.bgPage, 0))
 	ui.Row(c).Fill().AlignItems(ui.Stretch).Children(func() {
 		a.settingsNav(c, pal)
-		ui.Column(c.Key("page")).Grow(1).MinWidth(0).AlignItems(ui.Stretch).Background(pal.bgPage).Children(func() {
+		ui.Column(c.Key("page")).Grow(1).MinWidth(0).AlignItems(ui.Stretch).Background(glass(c, pal, pal.bgPage)).Children(func() {
 			ui.Box(c).Height(titleBarTall).Shrink(0).DragWindow()
 			ui.Scroll(c.Key(a.ss.page)).Grow(1).MinHeight(0).TrackScroll(&a.ss.scroll).Padding(0, 32, 32, 32).Children(func() {
 				ui.Column(c).MaxWidth(readingWidth).Gap(32).AlignItems(ui.Stretch).Children(func() {
@@ -165,7 +166,7 @@ func (a *App) goPage(i int) {
 // violet, as the design's navigation is.
 func (a *App) settingsNav(c *ui.Context, pal *palette) {
 	nav := ui.Column(c.Key("nav")).Width(navWidth).Shrink(0).Padding(titleBarTall+8, 12, 16, 12).Gap(4).
-		Background(pal.bgSubtle).BorderWidth(0, 1, 0, 0).BorderColor(pal.border)
+		Background(glassTint(c, pal.bgSubtle, 0)).BorderWidth(0, 1, 0, 0).BorderColor(pal.border)
 	nav.Children(func() {
 		ui.Box(c).Height(titleBarTall).Absolute().Top(0).Left(0).Right(0).DragWindow()
 		for i, p := range navPages() {

@@ -60,6 +60,7 @@ func newPanel(a *App) *mygo.Window {
 		Hidden:      true,
 		Frameless:   true,
 		Transparent: true,
+		Vibrancy:    mygo.VibrancyPopover,
 		Width:       1100,
 		Height:      700,
 		Content:     ui.View(a.panelView),
@@ -97,7 +98,7 @@ func (a *App) panelView(c *ui.Context) {
 		return
 	}
 	card := ui.Row(c.Key("card")).Fill().Radius(panelRadius).Clip().AlignItems(ui.Stretch).
-		Background(pal.bgElevated).Border(1, pal.border)
+		Background(glass(c, pal, pal.bgElevated)).Border(1, pal.border)
 	card.Children(func() {
 		a.sidebarView(c, pal)
 		a.previewView(c, pal)
@@ -112,7 +113,7 @@ func (a *App) panelView(c *ui.Context) {
 // app switchers of old showed them. Search adds its field at the top.
 func (a *App) listPanelView(c *ui.Context, pal *palette) {
 	card := ui.Column(c.Key("card")).Fill().Radius(panelRadius).Clip().AlignItems(ui.Stretch).
-		Background(pal.bgElevated).Border(1, pal.border)
+		Background(glass(c, pal, pal.bgElevated)).Border(1, pal.border)
 	card.Children(func() {
 		if a.sw.Phase() == switcher.Searching {
 			a.searchView(c, pal)
@@ -208,7 +209,7 @@ func (a *App) panelKeys(c *ui.Context) {
 
 func (a *App) sidebarView(c *ui.Context, pal *palette) {
 	col := ui.Column(c.Key("sidebar")).Width(sidebarWidth).Shrink(0).AlignItems(ui.Stretch).
-		Background(pal.bgSubtle).BorderWidth(0, 1, 0, 0).BorderColor(pal.border)
+		Background(glassTint(c, pal.bgSubtle, 0.45)).BorderWidth(0, 1, 0, 0).BorderColor(pal.border)
 	col.Children(func() {
 		a.searchView(c, pal)
 		list := ui.Scroll(c.Key("list")).Grow(1).MinHeight(0).TrackScroll(&a.ses.scroll).Padding(0, listInset, 8, listInset).Gap(0)

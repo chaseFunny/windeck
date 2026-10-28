@@ -269,6 +269,7 @@ func (a *App) openUpdateWindow(front bool) {
 		TitleBarStyle:        mygo.TitleBarHiddenInset,
 		TitleBarHeight:       titleBarTall,
 		TrafficLightPosition: &mygo.Point{X: 16, Y: 16},
+		Vibrancy:             mygo.VibrancyUnderWindow,
 		Content:              ui.View(a.updateView),
 	})
 	a.upd.win.Center()
@@ -318,7 +319,7 @@ func (a *App) closeUpdateWindow() {
 // the one that goes on the primary.
 func (a *App) updateView(c *ui.Context) {
 	pal := themed(c)
-	c.Root().Background(pal.bgPage)
+	c.Root().Background(glass(c, pal, pal.bgPage))
 	u := &a.upd
 	cur := mygo.App.Version()
 	version := ""
