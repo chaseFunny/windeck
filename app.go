@@ -160,9 +160,10 @@ func (a *App) start() {
 	} else {
 		a.startTap()
 		switch {
-		case !a.set.Onboarded:
+		case !a.introPlayed():
+			// Once a Mac: then the permissions, or the switcher's guide.
 			a.showIntro()
-		case !a.trusted:
+		case !a.set.Onboarded || !a.trusted:
 			a.openOnboarding()
 		}
 	}

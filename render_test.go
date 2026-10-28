@@ -201,3 +201,19 @@ func TestRenderIntro(t *testing.T) {
 		}
 	}
 }
+
+// The intro plays once a Mac: recorded as it starts, in a file of its own.
+func TestIntroPlaysOnce(t *testing.T) {
+	a := testApp(t)
+	if a.introPlayed() {
+		t.Fatal("a new Mac has played the intro")
+	}
+	a.markIntroPlayed()
+	if !a.introPlayed() {
+		t.Fatal("the intro is not recorded")
+	}
+	a.resetLearned()
+	if !a.introPlayed() {
+		t.Fatal("resetting what was learned forgot the intro")
+	}
+}

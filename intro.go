@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"math"
+	"os"
 	"time"
 
 	"github.com/egoist/mygo"
@@ -132,12 +134,33 @@ type introState struct {
 	boxes  []box
 }
 
+// introFile records that this Mac has seen the intro: it plays once a
+// Mac, on the first launch of a version that has it, whether Windeck was
+// set up before or not, and never again. It is a file of its own, apart
+// from the settings, which their reset leaves alone.
+const introFile = "intro.json"
+
+// introPlayed reports whether the intro played on this Mac.
+func (a *App) introPlayed() bool {
+	_, err := os.Stat(a.path(introFile))
+	return err == nil
+}
+
+// markIntroPlayed records that the intro played, as it starts: skipped
+// halfway, it does not play again either.
+func (a *App) markIntroPlayed() {
+	b, _ := json.Marshal(map[string]any{"played": time.Now().UTC(), "version": mygo.App.Version()})
+	os.MkdirAll(a.dir, 0o700)
+	os.WriteFile(a.path(introFile), b, 0o600)
+}
+
 // showIntro plays the intro on the display with the pointer, then goes
 // on to the permissions or the switcher.
 func (a *App) showIntro() {
 	if a.intro.win != nil {
 		return // playing
 	}
+	a.markIntroPlayed()
 	in := &a.intro
 	*in = introState{word: wordGlyphs()}
 	var x float32

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.1
+
+- The intro plays once on every Mac, on the first launch of a version that has it, also where Windeck was set up before; Windeck records that it played (intro.json, beside the settings) and never plays it again. 1.2.0 played it only on a first setup.
+
 ## 1.2.0
 
 - An intro on the first launch, over the whole screen with a breathing violet aurora: "Windeck" is written out by hand, each letter turns into a window card, the cards stack into the logo's deck as its violet square opens, the name rises under it, and the logo flies to the permissions' window, or into the switcher shown under a guide to its keys. A click, Return or Escape skips it.
